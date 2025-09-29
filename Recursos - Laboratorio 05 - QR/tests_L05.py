@@ -23,7 +23,7 @@ def cantColumnas(A):
     return len(A[0])
 
 def conseguirColumna(A, j):
-    columna = np.zeros(cantColumnas(A))
+    columna = []
     for k in range(cantColumnas(A)):
         columna.append(A[k][0])
 
@@ -56,8 +56,8 @@ def restaVectorial(u, v):
     return res
 
 def QR_con_GS(A,tol=1e-12,retorna_nops=False):
-    Q = np.zeros(cantFilas(A),cantColumnas(A))
-    R = np.zeros(cantFilas(A),cantColumnas(A))
+    Q = np.zeros((cantFilas(A),cantColumnas(A)))
+    R = np.zeros((cantFilas(A),cantColumnas(A)))
     nops = 0
 
     a_1 = conseguirColumna(A, 0)
