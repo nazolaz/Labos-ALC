@@ -151,7 +151,7 @@ def res_tri(L, b, inferior=True):
 def calculaLU(A):
     cant_op = 0
     m=A.shape[0]
-    n=A .shape[1]
+    n=A.shape[1]
     Ac = A.copy()
     
     if m!=n:
