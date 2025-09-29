@@ -42,7 +42,8 @@ def trans_afin(v, theta, s, b):
     return np.array([casi_res[0][0], casi_res[1][0]])
 
 
-trans_afin(np.array([1, 0]), np.pi / 2, [3, 2], [4, 5])
+
+
 def norma (x, p):
     if p == 'inf':
         return max(map(abs ,x))
@@ -91,7 +92,7 @@ def normaMatMC(A, q, p, Np):
 
 def condMC(A, p, Np=1000000):
     AInv = inversa(A)
-    if (AInv is None):
+    if AInv is None:
         return None
     
     normaAInv = normaMatMC(AInv, p, p, Np)[0]
@@ -146,31 +147,11 @@ def res_tri(L, b, inferior=True):
     return sustitucionHaciaAtras(L,b)
 
 
-def triangSup(A):
-    ATriangSup = A.copy()
 
-    for i in range(len(A)):
-        for j in range(len(A[i])):
-            if j < i:
-                ATriangSup[i,j] = 0
-    
-    return ATriangSup
-
-def triangL(A):
-    L = A.copy()
-
-    for i in range(len(A)):
-        for j in range(len(A[i])):
-            if j > i:
-                L[i][j] = 0 
-            if j == i:
-                L[i][i] = 1
-    
-    return L
 def calculaLU(A):
     cant_op = 0
     m=A.shape[0]
-    n=A.shape[1]
+    n=A .shape[1]
     Ac = A.copy()
     
     if m!=n:
@@ -192,10 +173,7 @@ def calculaLU(A):
     return triangL(Ac), triangSup(Ac), cant_op
 
 
-def colIdentidad(dimension, col):
-    columna = np.zeros(dimension)
-    columna[col] = 1
-    return columna
+
 
 def inversa(A):
     dim = len(A)
@@ -222,6 +200,9 @@ def inversa(A):
             Uinv[j][i] = colInv[j]
 
     return Uinv @ Linv
+
+
+
 
 
 def calculaLDV(A):

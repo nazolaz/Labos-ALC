@@ -46,3 +46,33 @@ def matricesIguales(A, B, atol = 1e-8):
            if moduloALC.error(np.float64(valor), np.float64(B[i][j])) > atol:
                 return False
     return True
+
+
+def colIdentidad(dimension, col):
+    columna = np.zeros(dimension)
+    columna[col] = 1
+    return columna
+
+
+
+def triangSup(A):
+    ATriangSup = A.copy()
+
+    for i in range(len(A)):
+        for j in range(len(A[i])):
+            if j < i:
+                ATriangSup[i,j] = 0
+    
+    return ATriangSup
+
+def triangL(A):
+    L = A.copy()
+
+    for i in range(len(A)):
+        for j in range(len(A[i])):
+            if j > i:
+                L[i][j] = 0 
+            if j == i:
+                L[i][i] = 1
+    
+    return L
