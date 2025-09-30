@@ -58,17 +58,18 @@ def normaliza(Xs, p):
     XsNormalizado = list()
 
     for vector in Xs:
-        res = normalizarVector(Xs, p, vector)
+        res = normalizarVector(vector, p)
         XsNormalizado.append(res)
 
-    return res
+    return XsNormalizado
 
-def normalizarVector(Xs, p, vector):
-    res = []
+def normalizarVector(vector, p):
+    vectorNormalizado = list()
+
     normaVector = norma(vector, p)
-    for x in Xs:
-        res.append(x/normaVector)
-    return res
+    for xi in vector:
+        vectorNormalizado.append(xi/normaVector)
+    return vectorNormalizado
 
 
 def normaExacta(A, p = [1, 'inf']):
