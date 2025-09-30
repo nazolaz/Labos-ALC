@@ -30,7 +30,7 @@ def escala(s):
 
 
 def rota_y_escala(theta: float, s):
-    return escala(s)@rota(theta)
+    return multiplicacion_matrices(escala(s), rota(theta))
 
 def afin(theta, s, b):
     m1 = rota_y_escala(theta, s)
@@ -38,7 +38,7 @@ def afin(theta, s, b):
     
 
 def trans_afin(v, theta, s, b):
-    casi_res = afin(theta, s, b)@np.array([[v[0]],[v[1]],[1]])
+    casi_res = multiplicacion_matrices(afin(theta, s, b),np.array([[v[0]],[v[1]],[1]]))
     return np.array([casi_res[0][0], casi_res[1][0]])
 
 
@@ -97,7 +97,7 @@ def normaMatMC(A, q, p, Np):
     ## multiplicar A por cada Xs
     multiplicados = []
     for Xs in normalizados:
-        multiplicados.append((A @ Xs))
+        multiplicados.append((calcularAx(A, Xs)))
     
     maximo = [0,0]
     for vector in multiplicados:
@@ -218,7 +218,7 @@ def inversa(A):
         for j in range(dim):
             Uinv[j][i] = colInv[j]
 
-    return Uinv @ Linv
+    return multiplicacion_matrices(Uinv, Linv)
 
 
 
