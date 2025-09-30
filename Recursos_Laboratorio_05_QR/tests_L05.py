@@ -3,37 +3,6 @@ from modulo.moduloALC import norma, normaliza, normalizarVector
 from modulo.moduloALCaux import cantColumnas, cantFilas, conseguirColumna, insertarColumna, productoEscalar, productoInterno, restaVectorial
 
 
-
-def QR_con_GS(A,tol=1e-12,retorna_nops=False):
-    Q = np.zeros((cantFilas(A),cantColumnas(A)))
-    R = np.zeros((cantFilas(A),cantColumnas(A)))
-    nops = 0
-
-    a_1 = conseguirColumna(A, 0)
-    insertarColumna(Q, normalizarVector(a_1, 2), 0)
-    R[0][0] = norma(a_1, 2)
-
-    for j in range(1, cantFilas(A)):
-        qMoño_j = conseguirColumna(A, j)
-
-        for k in range(0, j):
-            q_k = conseguirColumna(Q, k)
-            R[k][j] = productoInterno(q_k, qMoño_j)
-            qMoño_j = restaVectorial(qMoño_j, productoEscalar(q_k, R[k][j]))
-        
-        R[j][j] = norma(qMoño_j, 2)
-        insertarColumna(Q, productoEscalar(qMoño_j, 1/R[j][j]), j)
-
-    if (retorna_nops):
-        return Q, R, nops
-
-    return Q, R
-
-
-
-
-
-
 def QR_con_HH(A,tol=1e-12):
     """
     A una matriz de m x n (m>=n)
@@ -68,20 +37,10 @@ A4 = np.array([[2., 0., 1., 3.],
                [3., 1., 0., 2.]])
 
 # --- Funciones auxiliares para los tests ---
-def check_QR(Q,R,A,tol=1e-10):
-    # Comprueba ortogonalidad y reconstrucción
-    assert np.allclose(Q.T @ Q, np.eye(Q.shape[1]), atol=tol)
-    assert np.allclose(Q @ R, A, atol=tol)
+
 
 # --- TESTS PARA QR_by_GS2 ---
-Q2,R2 = QR_con_GS(A2)
-check_QR(Q2,R2,A2)
 
-Q3,R3 = QR_con_GS(A3)
-check_QR(Q3,R3,A3)
-
-Q4,R4 = QR_con_GS(A4)
-check_QR(Q4,R4,A4)
 
 # # --- TESTS PARA QR_by_HH ---
 # Q2h,R2h = QR_con_GS(A2)

@@ -213,22 +213,53 @@ class TestModuloALC(unittest.TestCase):
         self.assertTrue(np.allclose(D,D0,1e-3))
         self.assertTrue(np.allclose(V,V0,1e-3))
 
-        def test_esSDP(self):
-            L0 = np.array([[1,0,0],[1,1,0],[1,1,1]])
-            D0 = np.diag([1,1,1])
-            A = L0 @ D0 @ L0.T
-            self.assertTrue(esSDP(A))
+    def test_esSDP(self):
+        L0 = np.array([[1,0,0],[1,1,0],[1,1,1]])
+        D0 = np.diag([1,1,1])
+        A = L0 @ D0 @ L0.T
+        self.assertTrue(esSDP(A))
 
-            D0 = np.diag([1,-1,1])
-            A = L0 @ D0 @ L0.T
-            self.assertFalse(esSDP(A))
+        D0 = np.diag([1,-1,1])
+        A = L0 @ D0 @ L0.T
+        self.assertFalse(esSDP(A))
 
-            D0 = np.diag([1,1,1e-16])
-            A = L0 @ D0 @ L0.T
-            self.assertFalse(esSDP(A))
+        D0 = np.diag([1,1,1e-16])
+        A = L0 @ D0 @ L0.T
+        self.assertFalse(esSDP(A))
 
-            L0 = np.array([[1,0,0],[1,1,0],[1,1,1]])
-            D0 = np.diag([1,1,1])
-            V0 = np.array([[1,0,0],[1,1,0],[1,1+1e-10,1]]).T
-            A = L0 @ D0 @ V0
-            self.assertFalse(esSDP(A))
+        L0 = np.array([[1,0,0],[1,1,0],[1,1,1]])
+        D0 = np.diag([1,1,1])
+        V0 = np.array([[1,0,0],[1,1,0],[1,1+1e-10,1]]).T
+        A = L0 @ D0 @ V0
+        self.assertFalse(esSDP(A))
+
+
+    def test_QR_con_GS(self):
+
+        # --- Matrices de prueba ---
+        A2 = np.array([[1., 2.],
+                    [3., 4.]])
+
+        A3 = np.array([[1., 0., 1.],
+                    [0., 1., 1.],
+                    [1., 1., 0.]])
+
+        A4 = np.array([[2., 0., 1., 3.],
+                    [0., 1., 4., 1.],
+                    [1., 0., 2., 0.],
+                    [3., 1., 0., 2.]])
+
+        def check_QR(Q,R,A,tol=1e-10):
+            # Comprueba ortogonalidad y reconstrucción
+            assert np.allclose(Q.T @ Q, np.eye(Q.shape[1]), atol=tol)
+            assert np.allclose(Q @ R, A, atol=tol)
+
+
+        Q2,R2 = QR_con_GS(A2)
+        check_QR(Q2,R2,A2)
+
+        Q3,R3 = QR_con_GS(A3)
+        check_QR(Q3,R3,A3)
+
+        Q4,R4 = QR_con_GS(A4)
+        check_QR(Q4,R4,A4)
