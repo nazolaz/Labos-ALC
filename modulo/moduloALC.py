@@ -44,19 +44,28 @@ def trans_afin(v, theta, s, b):
 
 
 
-def norma(x, p):
+def norma(Xs, p):
     if p == 'inf':
-        return max(map(abs ,x))
+        return max(map(abs ,Xs))
     
     res = 0 
-    for xi in x:
+    for xi in Xs:
         res += xi**p
     return res**(1/p)
 
 
 def normaliza(Xs, p):
+    XsNormalizado = list()
+
+    for vector in Xs:
+        res = normalizarVector(Xs, p, vector)
+        XsNormalizado.append(res)
+
+    return res
+
+def normalizarVector(Xs, p, vector):
     res = []
-    normaVector = norma(Xs, p)
+    normaVector = norma(vector, p)
     for x in Xs:
         res.append(x/normaVector)
     return res
