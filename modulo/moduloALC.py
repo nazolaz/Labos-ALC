@@ -83,26 +83,34 @@ def normaExacta(A, p = [1, 'inf']):
         return None
 
 def normaMatMC(A, q, p, Np):
-    m = len(A[0])
+    n = len(A)
     vectors = []
+
+    ## generamos Np vectores random
     for i in range(0,Np):
-        vectors.append(np.random.rand(m,1))
+        vectors.append(np.random.rand(n,1))
     
+    ## normalizamos los vectores
     normalizados = normaliza(vectors, p)
 
+
+    ## multiplicar A por cada Xs
     multiplicados = []
-    for vector in normalizados:
-        multiplicados.append(calcularAx(A, vector))
+    for Xs in normalizados:
+        multiplicados.append((A @ Xs))
     
-    
-    for i, vector in enumerate(multiplicados):
-        multiplicados[i] = (norma(vector, q), normalizados[i])
-    
-    return max(multiplicados, key=lambda t: t[0])
+    maximo = [0,0]
+    for vector in multiplicados:
+        
+        if norma(vector, q) > maximo[0]:
+            maximo[0] = norma(vector, q)
+            maximo[1] = vector
+
+    return maximo
 
 
 def condMC(A, p, Np=1000000):
-    AInv = inversa(A)
+    AInv = np.linalg.inv(A)
     if AInv is None:
         return None
     

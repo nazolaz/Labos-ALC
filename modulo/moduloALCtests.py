@@ -147,6 +147,7 @@ class TestModuloALC(unittest.TestCase):
         normaA = normaMatMC(A,2,2,10000)
         normaA_ = normaMatMC(A_,2,2,10000)
         condA = condMC(A,2,10000)
+
         assert(np.allclose(normaA[0]*normaA_[0],condA,atol=1e-3))
 
     def test_condExacta(self):
