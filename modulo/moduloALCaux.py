@@ -89,12 +89,12 @@ def cantColumnas(A):
 def conseguirColumna(A, j):
     columna = []
     for k in range(cantColumnas(A)):
-        columna.append(A[k][0])
+        columna.append(A[k][j])
 
     return np.array(columna)
 
 def insertarColumna(A, b, j):
-    for k in range(cantColumnas(A)):
+    for k in range(cantFilas(A)):
         A[k][j] = b[k]
     return A
 

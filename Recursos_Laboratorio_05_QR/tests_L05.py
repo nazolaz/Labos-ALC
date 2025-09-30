@@ -1,5 +1,5 @@
 ### Funciones L05-QR
-from modulo.moduloALC import norma, normaliza
+from modulo.moduloALC import norma, normaliza, normalizarVector
 from modulo.moduloALCaux import cantColumnas, cantFilas, conseguirColumna, insertarColumna, productoEscalar, productoInterno, restaVectorial
 
 
@@ -10,13 +10,13 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
     nops = 0
 
     a_1 = conseguirColumna(A, 0)
-    insertarColumna(Q, normaliza(a_1, 2), 0)
+    insertarColumna(Q, normalizarVector(a_1, 2), 0)
     R[0][0] = norma(a_1, 2)
 
     for j in range(1, cantFilas(A)):
         qMoño_j = conseguirColumna(A, j)
 
-        for k in range(0, j-1):
+        for k in range(0, j):
             q_k = conseguirColumna(Q, k)
             R[k][j] = productoInterno(q_k, qMoño_j)
             qMoño_j = restaVectorial(qMoño_j, productoEscalar(q_k, R[k][j]))
