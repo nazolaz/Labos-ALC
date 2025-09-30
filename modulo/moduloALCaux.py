@@ -1,5 +1,5 @@
 import numpy as np
-import modulo.moduloALC
+import modulo.moduloALC as alc
 
 
 def calcularAx(A, x):
@@ -44,7 +44,7 @@ def matricesIguales(A, B, atol = 1e-8):
         return False
     for i, fila in enumerate(A):
         for j, valor in enumerate(fila):
-           if moduloALC.error(np.float64(valor), np.float64(B[i][j])) > atol:
+           if alc.error(np.float64(valor), np.float64(B[i][j])) > atol:
                 return False
     return True
 
