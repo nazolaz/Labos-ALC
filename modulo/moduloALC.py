@@ -1,5 +1,5 @@
 import numpy as np
-from moduloALCaux import *
+from modulo.moduloALCaux import *
 
 
 def error(x, y):
@@ -44,7 +44,7 @@ def trans_afin(v, theta, s, b):
 
 
 
-def norma (x, p):
+def norma(x, p):
     if p == 'inf':
         return max(map(abs ,x))
     
@@ -56,8 +56,9 @@ def norma (x, p):
 
 def normaliza(Xs, p):
     res = []
+    normaVector = norma(Xs, p)
     for x in Xs:
-        res.append(x/norma(x,p))
+        res.append(x/normaVector)
     return res
 
 

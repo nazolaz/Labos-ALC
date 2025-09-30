@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from moduloALC import *
+from modulo.moduloALC import *
 
 class TestModuloALC(unittest.TestCase):
 

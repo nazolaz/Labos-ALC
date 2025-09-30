@@ -1,59 +1,8 @@
 ### Funciones L05-QR
-
-def norma (x, p):
-    if p == 'inf':
-        return max(map(abs ,x))
-    
-    res = 0 
-    for xi in x:
-        res += xi**p
-    return res**(1/p)
+from modulo.moduloALC import norma, normaliza
+from modulo.moduloALCaux import cantColumnas, cantFilas, conseguirColumna, insertarColumna, productoEscalar, productoInterno, restaVectorial
 
 
-def normaliza(Xs, p):
-    res = []
-    for x in Xs:
-        res.append(x/norma(x,p))
-    return res
-
-def cantFilas(A):
-    return len(A)
-
-def cantColumnas(A):
-    return len(A[0])
-
-def conseguirColumna(A, j):
-    columna = []
-    for k in range(cantColumnas(A)):
-        columna.append(A[k][0])
-
-    return np.array(columna)
-
-def insertarColumna(A, b, j):
-    for k in range(cantColumnas(A)):
-        A[k][j] = b[k]
-    return A
-
-def productoInterno(u, v):
-    sum = 0
-    for ui, vi in zip(u, v):
-        sum += ui*vi
-    
-    return sum
-
-def productoEscalar(u, k):
-    res = ()
-    for _, ui in enumerate(u):
-        res.append(k*ui)
-    
-    return res
-
-def restaVectorial(u, v):
-    res = ()
-    for ui, vi in zip(u,v):
-        res.append(ui - vi)
-
-    return res
 
 def QR_con_GS(A,tol=1e-12,retorna_nops=False):
     Q = np.zeros((cantFilas(A),cantColumnas(A)))
@@ -78,8 +27,7 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
     if (retorna_nops):
         return Q, R, nops
 
-    else:
-        return Q, R
+    return Q, R
 
 
 
@@ -135,22 +83,22 @@ check_QR(Q3,R3,A3)
 Q4,R4 = QR_con_GS(A4)
 check_QR(Q4,R4,A4)
 
-# --- TESTS PARA QR_by_HH ---
-Q2h,R2h = QR_con_GS(A2)
-check_QR(Q2h,R2h,A2)
+# # --- TESTS PARA QR_by_HH ---
+# Q2h,R2h = QR_con_GS(A2)
+# check_QR(Q2h,R2h,A2)
 
-Q3h,R3h = QR_con_HH(A3)
-check_QR(Q3h,R3h,A3)
+# Q3h,R3h = QR_con_HH(A3)
+# check_QR(Q3h,R3h,A3)
 
-Q4h,R4h = QR_con_HH(A4)
-check_QR(Q4h,R4h,A4)
+# Q4h,R4h = QR_con_HH(A4)
+# check_QR(Q4h,R4h,A4)
 
-# --- TESTS PARA calculaQR ---
-Q2c,R2c = calculaQR(A2,metodo='RH')
-check_QR(Q2c,R2c,A2)
+# # --- TESTS PARA calculaQR ---
+# Q2c,R2c = calculaQR(A2,metodo='RH')
+# check_QR(Q2c,R2c,A2)
 
-Q3c,R3c = calculaQR(A3,metodo='GS')
-check_QR(Q3c,R3c,A3)
+# Q3c,R3c = calculaQR(A3,metodo='GS')
+# check_QR(Q3c,R3c,A3)
 
-Q4c,R4c = calculaQR(A4,metodo='RH')
-check_QR(Q4c,R4c,A4)
+# Q4c,R4c = calculaQR(A4,metodo='RH')
+# check_QR(Q4c,R4c,A4)

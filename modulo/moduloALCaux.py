@@ -1,5 +1,6 @@
 import numpy as np
-import moduloALC
+import modulo.moduloALC
+
 
 def calcularAx(A, x):
     res = np.zeros(A.shape[0])  #A.shape[0] devuelve la cantidad de filas de A
@@ -76,3 +77,44 @@ def triangL(A):
                 L[i][i] = 1
     
     return L
+
+
+def cantFilas(A):
+    return len(A)
+
+def cantColumnas(A):
+    return len(A[0])
+
+
+def conseguirColumna(A, j):
+    columna = []
+    for k in range(cantColumnas(A)):
+        columna.append(A[k][0])
+
+    return np.array(columna)
+
+def insertarColumna(A, b, j):
+    for k in range(cantColumnas(A)):
+        A[k][j] = b[k]
+    return A
+
+def productoInterno(u, v):
+    sum = 0
+    for ui, vi in zip(u, v):
+        sum += ui*vi
+    
+    return sum
+
+def productoEscalar(u, k):
+    res = []
+    for _, ui in enumerate(u):
+        res.append(k*ui)
+    
+    return res
+
+def restaVectorial(u, v):
+    res = []
+    for ui, vi in zip(u,v):
+        res.append(ui - vi)
+
+    return res
