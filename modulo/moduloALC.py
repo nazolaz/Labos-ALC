@@ -87,8 +87,8 @@ def normaMatMC(A, q, p, Np):
     vectors = []
 
     ## generamos Np vectores random
-    for i in range(0,Np):
-        vectors.append(np.random.rand(n,1))
+    for _ in range(0,Np):
+        vectors.append(np.random.rand(n,1)*2-1)
     
     ## normalizamos los vectores
     normalizados = normaliza(vectors, p)
