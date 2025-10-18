@@ -1,6 +1,8 @@
 import numpy as np
 from modulo.moduloALCaux import *
 
+# POR HACER/TERMINAR
+#   - contar cantidad de operaciones en QR-GS
 
 def error(x, y):
     return abs(np.float64(x) - np.float64(y))
@@ -42,8 +44,6 @@ def trans_afin(v, theta, s, b):
     return np.array([casi_res[0][0], casi_res[1][0]])
 
 
-
-
 def norma(Xs, p):
     if p == 'inf':
         return max(map(abs ,Xs))
@@ -62,14 +62,6 @@ def normaliza(Xs, p):
         XsNormalizado.append(res)
 
     return XsNormalizado
-
-def normalizarVector(vector, p):
-    vectorNormalizado = list()
-
-    normaVector = norma(vector, p)
-    for xi in vector:
-        vectorNormalizado.append(xi/normaVector)
-    return vectorNormalizado
 
 
 def normaExacta(A, p = [1, 'inf']):
@@ -131,8 +123,6 @@ def condExacta(A, p):
 
 
     return normaA * normaAInv
-
-
 
 def sustitucionHaciaAtras(A, b):
     valoresX = np.zeros(len(b))
@@ -206,7 +196,7 @@ def inversa(A):
     Uinv = np.zeros((dim,dim))
 
     for i in range(dim):
-        colInv = res_tri(L, colIdentidad(dim, i), inferior=True)
+        colInv = res_tri(L, filaIdentidad(dim, i), inferior=True)
         for j in range(dim):
             Linv[j][i] = colInv[j]
 
@@ -214,7 +204,7 @@ def inversa(A):
         if( U[i,i] == 0):
             return None
 
-        colInv = res_tri(U, colIdentidad(dim, i), inferior=False)
+        colInv = res_tri(U, filaIdentidad(dim, i), inferior=False)
         for j in range(dim):
             Uinv[j][i] = colInv[j]
 

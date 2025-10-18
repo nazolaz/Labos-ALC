@@ -3,12 +3,11 @@ import modulo.moduloALC as alc
 
 
 def calcularAx(A, x):
-    res = np.zeros(A.shape[0])  #A.shape[0] devuelve la cantidad de filas de A
+    res = np.zeros(cantFilas(A))  
     for i, row in enumerate(A):
         for j, value in enumerate(row):
             res[i] += value * x[j][0] 
     return res
-
 
 def normaInf(A):
     sumatorias = []
@@ -17,21 +16,18 @@ def normaInf(A):
     
     return max(sumatorias)
 
-
 def esSimetrica(A):
     for i, row in enumerate(A):
         for j, value in enumerate(row):
             if A[j][i] != A[i][j]:
                 return False
     return True
-    
-
 
 def multiplicacion_matrices(A, M):
-    res = np.empty((A.shape[0], M.shape[1]))
-    n = A.shape[1]
+    n = cantFilas(A)
+    res = np.empty((n, cantColumnas(M)))
     for i in range(len(A)):
-        for j in range(M.shape[1]):
+        for j in range(cantColumnas(M)):
             value = 0
             for k in range(n):
                 value += A[i][k] * M[k][j]
@@ -49,12 +45,35 @@ def matricesIguales(A, B, atol = 1e-8):
     return True
 
 
-def colIdentidad(dimension, col):
-    columna = np.zeros(dimension)
-    columna[col] = 1
+def filaIdentidad(dimension, i):
+    fila = np.zeros(dimension)
+    fila[i] = 1
+    return fila
+
+def colIdentidad(dimension, i):
+    columna = np.zeros((dimension, 1))
+    columna[i][0] = 1
     return columna
 
+def normalizarVector(vector, p):
+    vectorNormalizado = []
 
+    normaVector = alc.norma(vector, p)
+    for xi in vector:
+        vectorNormalizado.append(xi/normaVector)
+
+    return np.array(vectorNormalizado)
+
+def traspuesta(A: np.array):
+    res = np.zeros(cantColumnas(A), cantFilas(A))
+    for i, row in enumerate(A):
+        for j, value in enumerate(row):
+            res[i][j] = A[j][i]
+            
+    return res
+
+def dimension(A):
+    return cantFilas(A), cantColumnas(A)
 
 def triangSup(A):
     ATriangSup = A.copy()
@@ -78,13 +97,14 @@ def triangL(A):
     
     return L
 
-
 def cantFilas(A):
     return len(A)
 
 def cantColumnas(A):
     return len(A[0])
 
+def longitudVector(v):
+    return len(A)
 
 def conseguirColumna(A, j):
     columna = []
@@ -97,6 +117,13 @@ def insertarColumna(A, b, j):
     for k in range(cantFilas(A)):
         A[k][j] = b[k]
     return A
+
+def conseguirColumnaSufijo(A, j, k):
+    columna = []
+    for l in range(k, cantColumnas(A)):
+        columna.append(A[l][j])
+    
+    return np.array(columna)
 
 def productoInterno(u, v):
     sum = 0
@@ -118,3 +145,17 @@ def restaVectorial(u, v):
         res.append(ui - vi)
 
     return res
+
+def nIdentidad(n):
+    I = np.zeros((n,n))
+    for k in range(n):
+        I[k][k] = 1
+    return I
+
+def signo(n):
+    if n > 0:
+        return 1
+    elif n < 0:
+        return -1
+    else:
+        return 0
