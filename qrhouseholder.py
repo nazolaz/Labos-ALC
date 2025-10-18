@@ -18,6 +18,8 @@ def QR_con_HH (A, tol = 1e-12):
         u = x - productoEscalar(a, filaIdentidad(n - k + 1, 1))
         
         if alc.norma(u, 2) > tol:
-            u_normalizado = normalizarVector(u, 2)
-            
+            u_n = normalizarVector(u, 2)
+            H_k = nIdentidad(m - 1 + k)
+
+    
 

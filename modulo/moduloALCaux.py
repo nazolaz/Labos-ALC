@@ -1,6 +1,6 @@
 import numpy as np
 import modulo.moduloALC as alc
-
+from collections.abc import Iterable
 
 def calcularAx(A, x):
     res = np.zeros(cantFilas(A))  
@@ -16,14 +16,14 @@ def normaInf(A):
     
     return max(sumatorias)
 
-def esSimetrica(A):
+def esSimetrica(A, tol = 1e-8):
     for i, row in enumerate(A):
         for j, value in enumerate(row):
-            if A[j][i] != A[i][j]:
+            if alc.error_relativo(A[j][i], A[i][j]) > tol:
                 return False
     return True
 
-def multiplicacion_matrices(A, M):
+def productoMatricial(A, M):
     n = cantFilas(A)
     res = np.empty((n, cantColumnas(M)))
     for i in range(len(A)):
@@ -64,11 +64,17 @@ def normalizarVector(vector, p):
 
     return np.array(vectorNormalizado)
 
-def traspuesta(A: np.array):
-    res = np.zeros(cantColumnas(A), cantFilas(A))
-    for i, row in enumerate(A):
-        for j, value in enumerate(row):
-            res[i][j] = A[j][i]
+def traspuesta(A):
+    if (isinstance(A[0], Iterable)):
+        res = np.zeros((cantColumnas(A), cantFilas(A)))
+        for i, row in enumerate(A):
+            for j, value in enumerate(row):
+                res[j][i] = A[i][j]
+
+    else:
+        res = np.zeros((len(A),1))
+        for i, value in enumerate(A):
+            res[i][0] = value 
             
     return res
 
@@ -98,13 +104,21 @@ def triangL(A):
     return L
 
 def cantFilas(A):
-    return len(A)
+    if isinstance(A[0], Iterable):
+        return len(A)
+
+    else:
+        return 1
 
 def cantColumnas(A):
-    return len(A[0])
+    if isinstance(A[0], Iterable):
+        return len(A[0])
+    
+    else:
+        return len(A)
 
 def longitudVector(v):
-    return len(A)
+    return len(v)
 
 def conseguirColumna(A, j):
     columna = []
