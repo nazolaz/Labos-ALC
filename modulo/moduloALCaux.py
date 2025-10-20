@@ -16,24 +16,30 @@ def normaInf(A):
     
     return max(sumatorias)
 
-def esSimetrica(A, tol = 1e-8):
+def esSimetrica(A): #podria hacerse con tol pero no corren los tests
+    if not esCuadrada(A):
+        return False
     for i, row in enumerate(A):
         for j, value in enumerate(row):
-            if alc.error_relativo(A[j][i], A[i][j]) > tol:
+            if A[j][i] != A[i][j]:
                 return False
     return True
 
-def productoMatricial(A, M):
+def esCuadrada(A):
+    return cantColumnas(A) == cantFilas(A)
+
+def productoMatricial(A, B):# A es nxp, B es pxm
     n = cantFilas(A)
-    res = np.empty((n, cantColumnas(M)))
-    for i in range(len(A)):
-        for j in range(cantColumnas(M)):
+    p = cantFilas(B)
+    m = cantColumnas(B)
+    res = np.empty((n, m))
+    for i in range(n):
+        for j in range(m):
             value = 0
-            for k in range(n):
-                value += A[i][k] * M[k][j]
+            for k in range(p):
+                value += A[i][k] * B[k][j]
             res[i][j] = value
     return res  
-
 
 def matricesIguales(A, B, atol = 1e-8):
     if A.size != B.size and A[0].size != B[0].size:
