@@ -162,7 +162,6 @@ def productoInterno(u, v):
     
     return subtotal
 
-from collections.abc import Iterable
 
 def productoEscalar(A, k):
     if isinstance(A, Iterable):
