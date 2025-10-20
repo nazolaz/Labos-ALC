@@ -41,6 +41,16 @@ def productoMatricial(A, B):# A es nxp, B es pxm
             res[i][j] = value
     return res  
 
+def productoVectorColumnaPorFila(u, v):
+    n = cantFilas(u)
+    res = np.zeros((n, n))
+    for i, ui in enumerate(u):
+        for j, vj in enumerate(v):
+            res[i][j] = ui[0] * vj
+    return res
+
+
+
 def matricesIguales(A, B, atol = 1e-8):
     if A.size != B.size and A[0].size != B[0].size:
         return False
@@ -152,11 +162,22 @@ def productoInterno(u, v):
     
     return sum
 
-def productoEscalar(u, k):
-    res = []
-    for _, ui in enumerate(u):
-        res.append(k*ui)
-    
+from collections.abc import Iterable
+
+def productoEscalar(A, k):
+    if isinstance(A, Iterable):
+        return [productoEscalar(ai, k) for ai in A]
+    else:
+        return A * k
+
+def extenderConIdentidad(A, p): #solo para matrices cuadradas
+    res = nIdentidad(p)
+    n = cantFilas(A)
+    for i in range(p - n, p):
+        k = i - (p - n)
+        for j in range(p - n, p):
+            l = j - (p - n)
+            res[i][j] = A[k][l]
     return res
 
 def restaVectorial(u, v):

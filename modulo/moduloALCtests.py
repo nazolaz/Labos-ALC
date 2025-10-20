@@ -236,9 +236,13 @@ class TestModuloALC(unittest.TestCase):
         self.assertFalse(esSDP(A))
 
 
-    def test_QR_con_GS(self):
+    def test_QR(self):
 
-        # --- Matrices de prueba ---
+        def check_QR(Q,R,A,tol=1e-10):
+            # Comprueba ortogonalidad y reconstrucción
+            assert np.allclose(Q.T @ Q, np.eye(Q.shape[1]), atol=tol)
+            assert np.allclose(Q @ R, A, atol=tol)
+
         A2 = np.array([[1., 2.],
                     [3., 4.]])
 
@@ -251,17 +255,17 @@ class TestModuloALC(unittest.TestCase):
                     [1., 0., 2., 0.],
                     [3., 1., 0., 2.]])
 
-        def check_QR(Q,R,A,tol=1e-10):
-            # Comprueba ortogonalidad y reconstrucción
-            assert np.allclose(Q.T @ Q, np.eye(Q.shape[1]), atol=tol)
-            assert np.allclose(Q @ R, A, atol=tol)
+        Q3h,R3h = QR_con_HH(A3)
+        check_QR(Q3h,R3h,A3)
 
+        Q4h,R4h = QR_con_HH(A4)
+        check_QR(Q4h,R4h,A4)    
 
-        Q2,R2 = QR_con_GS(A2)
-        check_QR(Q2,R2,A2)
+        Q2c,R2c = calculaQR(A2,metodo='RH')
+        check_QR(Q2c,R2c,A2)
 
-        Q3,R3 = QR_con_GS(A3)
-        check_QR(Q3,R3,A3)
+        Q3c,R3c = calculaQR(A3,metodo='GS')
+        check_QR(Q3c,R3c,A3)
 
-        Q4,R4 = QR_con_GS(A4)
-        check_QR(Q4,R4,A4)
+        Q4c,R4c = calculaQR(A4,metodo='RH')
+        check_QR(Q4c,R4c,A4)

@@ -2,7 +2,8 @@ import numpy as np
 from modulo.moduloALCaux import *
 
 # POR HACER/TERMINAR
-#   - contar cantidad de operaciones en QR-GS
+#   - ver si esta bien nops en QR-GS
+#   - hacer nuestro propio inverso y reemplazar linalg.inv
 
 def error(x, y):
     return abs(np.float64(x) - np.float64(y))
@@ -30,19 +31,16 @@ def escala(s):
 
     return matriz
 
-
 def rota_y_escala(theta: float, s):
     return productoMatricial(escala(s), rota(theta))
 
 def afin(theta, s, b):
     m1 = rota_y_escala(theta, s)
     return np.array([[m1[0][0],m1[0][1], b[0]],[m1[1][0], m1[1][1], b[1]],[0,0,1]])
-    
 
 def trans_afin(v, theta, s, b):
     casi_res = productoMatricial(afin(theta, s, b),np.array([[v[0]],[v[1]],[1]]))
     return np.array([casi_res[0][0], casi_res[1][0]])
-
 
 def norma(Xs, p):
     if p == 'inf':
@@ -53,16 +51,14 @@ def norma(Xs, p):
         res += xi**p
     return res**(1/p)
 
-
 def normaliza(Xs, p):
-    XsNormalizado = list()
+    XsNormalizado = []
 
     for vector in Xs:
         res = normalizarVector(vector, p)
         XsNormalizado.append(res)
 
     return XsNormalizado
-
 
 def normaExacta(A, p = [1, 'inf']):
     if p == 1:
@@ -75,7 +71,7 @@ def normaExacta(A, p = [1, 'inf']):
         return None
 
 def normaMatMC(A, q, p, Np):
-    n = len(A)
+    n = cantFilas(A)
     vectors = []
 
     ## generamos Np vectores random
@@ -84,7 +80,6 @@ def normaMatMC(A, q, p, Np):
     
     ## normalizamos los vectores
     normalizados = normaliza(vectors, p)
-
 
     ## multiplicar A por cada Xs
     multiplicados = []
@@ -100,7 +95,6 @@ def normaMatMC(A, q, p, Np):
 
     return maximo
 
-
 def condMC(A, p, Np=1000000):
     AInv = np.linalg.inv(A)
     if AInv is None:
@@ -108,10 +102,8 @@ def condMC(A, p, Np=1000000):
     
     normaAInv = normaMatMC(AInv, p, p, Np)[0]
     normaA = normaMatMC(A, p, p, Np)[0]
-    
 
     return normaA * normaAInv
-
 
 def condExacta(A, p):
     AInv = inversa(A)
@@ -120,13 +112,12 @@ def condExacta(A, p):
     
     if normaA is None:
         return 0
-
-
+    
     return normaA * normaAInv
 
 def sustitucionHaciaAtras(A, b):
     valoresX = np.zeros(len(b))
-    for i in range(len(A)-1, -1, -1):
+    for i in range(cantFilas(A)-1, -1, -1):
         cocienteActual = A[i][i]
         sumatoria = 0
         for k in range(i + 1, len(b)):
@@ -148,19 +139,14 @@ def sustitucionHaciaDelante(A, b):
         valoresX.append((b[i] - sumatoria)/cocienteActual)
     return np.array(valoresX)
 
-
-
 def res_tri(L, b, inferior=True):
     if(inferior):
         return sustitucionHaciaDelante(L,b)
     return sustitucionHaciaAtras(L,b)
 
-
-
 def calculaLU(A):
     cant_op = 0
-    m=A.shape[0]
-    n=A.shape[1]
+    m, n = dimension(A)
     Ac = A.copy()
     
     if m!=n:
@@ -181,38 +167,31 @@ def calculaLU(A):
     
     return triangL(Ac), triangSup(Ac), cant_op
 
-
-
-
 def inversa(A):
-    dim = len(A)
+    n = cantFilas(A)
 
     L,U,_ = calculaLU(A)
 
     if (L is None or U is None):
         return None    
 
-    Linv = np.zeros((dim,dim))
-    Uinv = np.zeros((dim,dim))
+    Linv = np.zeros((n,n))
+    Uinv = np.zeros((n,n))
 
-    for i in range(dim):
-        colInv = res_tri(L, filaIdentidad(dim, i), inferior=True)
-        for j in range(dim):
+    for i in range(n):
+        colInv = res_tri(L, filaIdentidad(n, i), inferior=True)
+        for j in range(n):
             Linv[j][i] = colInv[j]
 
-    for i in range(dim):
+    for i in range(n):
         if( U[i,i] == 0):
             return None
 
-        colInv = res_tri(U, filaIdentidad(dim, i), inferior=False)
-        for j in range(dim):
+        colInv = res_tri(U, filaIdentidad(n, i), inferior=False)
+        for j in range(n):
             Uinv[j][i] = colInv[j]
 
     return productoMatricial(Uinv, Linv)
-
-
-
-
 
 def calculaLDV(A):
     L, U, nops1 = calculaLU(A)
@@ -228,10 +207,8 @@ def calculaLDV(A):
     
     return L, D, Vt.T, nops1 + nops2
 
-
-
 def esSDP(A, atol=1e-10):
-    if( not (esSimetrica(A))):
+    if(not (esSimetrica(A))):
         return False
     
     L, D, Lt, _ = calculaLDV(A)
@@ -244,30 +221,72 @@ def esSDP(A, atol=1e-10):
             return False
     return True
 
-
-
-
 def QR_con_GS(A,tol=1e-12,retorna_nops=False):
-    Q = np.zeros((cantFilas(A),cantColumnas(A)))
-    R = np.zeros((cantFilas(A),cantColumnas(A)))
+    n = cantFilas(A)
+    Q = np.zeros((n,n))
+    R = np.zeros((n,n))
     nops = 0
 
     a_1 = conseguirColumna(A, 0)
     insertarColumna(Q, normalizarVector(a_1, 2), 0)
     R[0][0] = norma(a_1, 2)
+    nops += 2*n + 1
 
-    for j in range(1, cantFilas(A)):
+    for j in range(1, n):
         qMoño_j = conseguirColumna(A, j)
 
         for k in range(0, j):
             q_k = conseguirColumna(Q, k)
             R[k][j] = productoInterno(q_k, qMoño_j)
+            nops += 2*n - 1
             qMoño_j = restaVectorial(qMoño_j, productoEscalar(q_k, R[k][j]))
+            nops += 2*n
         
         R[j][j] = norma(qMoño_j, 2)
+        nops += 2*n - 1
         insertarColumna(Q, productoEscalar(qMoño_j, 1/R[j][j]), j)
+        nops += 1
 
     if (retorna_nops):
         return Q, R, nops
 
     return Q, R
+
+def QR_con_HH (A, tol = 1e-12):
+    m = cantFilas(A)
+    n = cantColumnas(A)
+
+    if m < n:
+        return None, None
+    
+    R = A.copy()
+    Q = nIdentidad(m)
+
+    for k in range(n):
+        x = conseguirColumnaSufijo(R, k, k)
+        a = (-1)*signo(x[0])*alc.norma(x, 2)
+        u = x - productoEscalar(a, filaIdentidad(m - k, 0))
+        
+        if alc.norma(u, 2) > tol:
+            u_n = normalizarVector(u, 2)
+            uut = productoVectorColumnaPorFila(traspuesta(u_n), u_n)
+            dosuut = productoEscalar(2, uut)
+            H_k = nIdentidad(m - k) - dosuut
+            H_k_ext = extenderConIdentidad(H_k, m)
+            R = productoMatricial(H_k_ext, R)
+            Q = productoMatricial(Q, traspuesta(H_k_ext))
+
+    return Q, R
+
+def calculaQR(A, metodo = 'RH', tol = 1e-12, nops = False):
+    if metodo == 'RH':
+        return QR_con_HH(A, tol)
+    
+    elif metodo == 'GS':
+        if nops:
+            return QR_con_GS(A, tol, True)
+        else:
+            return QR_con_GS(A, tol)
+    
+    else: 
+        return None, None, None
