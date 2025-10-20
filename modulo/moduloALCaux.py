@@ -156,11 +156,11 @@ def conseguirColumnaSufijo(A, j, k):
     return np.array(columna)
 
 def productoInterno(u, v):
-    sum = 0
+    subtotal = 0
     for ui, vi in zip(u, v):
-        sum += ui*vi
+        subtotal += ui*vi
     
-    return sum
+    return subtotal
 
 from collections.abc import Iterable
 

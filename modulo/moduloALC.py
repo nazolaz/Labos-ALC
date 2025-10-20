@@ -221,6 +221,38 @@ def esSDP(A, atol=1e-10):
             return False
     return True
 
+
+def metpot2k(A, tol=1e-15, K=1000.0):
+    n = len(A[0])
+    v = np.random.rand(n,1)
+    vmoñotemp = f_A(A, v)
+    vmoño = f_A(A, vmoñotemp)
+    e = float(productoInterno(vmoño, v)[0]) # NASTY
+    k = 0
+    while( abs(e - 1) > tol and k < K):
+
+        v = vmoño
+        vmoñotemp = f_A(A, v)
+        vmoño = f_A(A, vmoñotemp)
+        e = float(productoInterno(vmoño, v)[0]) # NASTY
+        k = k + 1
+    
+    ax = calcularAx(A, vmoño)
+    autovalor = productoInterno(vmoño, ax)
+
+    return v, autovalor, k
+
+
+def f_A(A, v):
+
+    wprima = A @ v
+
+    if norma(wprima, 2) > 0:
+        return normalizarVector(wprima, 2) 
+
+
+    return 0
+
 def QR_con_GS(A,tol=1e-12,retorna_nops=False):
     n = cantFilas(A)
     Q = np.zeros((n,n))
