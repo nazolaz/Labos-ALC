@@ -61,12 +61,12 @@ def matricesIguales(A, B, atol = 1e-8):
     return True
 
 
-def filaIdentidad(dimension, i):
+def filaCanonica(dimension, i):
     fila = np.zeros(dimension)
     fila[i] = 1
     return fila
 
-def colIdentidad(dimension, i):
+def colCanonico(dimension, i):
     columna = np.zeros((dimension, 1))
     columna[i][0] = 1
     return columna
@@ -75,6 +75,9 @@ def normalizarVector(vector, p):
     vectorNormalizado = []
 
     normaVector = alc.norma(vector, p)
+    if normaVector == 0:
+        return vector 
+    
     for xi in vector:
         vectorNormalizado.append(xi/normaVector)
 
@@ -181,6 +184,9 @@ def extenderConIdentidad(A, p): #solo para matrices cuadradas
 
 def restaVectorial(u, v):
     res = []
+    if isinstance(u[0], Iterable):
+        return restaVectorial(traspuesta(u),traspuesta(v))
+
     for ui, vi in zip(u,v):
         res.append(ui - vi)
 
@@ -199,3 +205,4 @@ def signo(n):
         return -1
     else:
         return 0
+    

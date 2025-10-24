@@ -4,6 +4,10 @@ from modulo.moduloALCaux import *
 # POR HACER/TERMINAR
 #   - ver si esta bien nops en QR-GS
 #   - hacer nuestro propio inverso y reemplazar linalg.inv
+#   - hacer clase matriz
+#   - hacer diagRH
+#   - hacer resta matricial
+#   - ver si esta bien lo de poner 1s en la diagonal para transiciones_al_azar_uniformes
 
 def error(x, y):
     return abs(np.float64(x) - np.float64(y))
@@ -179,7 +183,7 @@ def inversa(A):
     Uinv = np.zeros((n,n))
 
     for i in range(n):
-        colInv = res_tri(L, filaIdentidad(n, i), inferior=True)
+        colInv = res_tri(L, filaCanonica(n, i), inferior=True)
         for j in range(n):
             Linv[j][i] = colInv[j]
 
@@ -187,7 +191,7 @@ def inversa(A):
         if( U[i,i] == 0):
             return None
 
-        colInv = res_tri(U, filaIdentidad(n, i), inferior=False)
+        colInv = res_tri(U, filaCanonica(n, i), inferior=False)
         for j in range(n):
             Uinv[j][i] = colInv[j]
 
@@ -297,7 +301,7 @@ def QR_con_HH (A, tol = 1e-12):
     for k in range(n):
         x = conseguirColumnaSufijo(R, k, k)
         a = (-1)*signo(x[0])*alc.norma(x, 2)
-        u = x - productoEscalar(a, filaIdentidad(m - k, 0))
+        u = x - productoEscalar(a, filaCanonica(m - k, 0))
         
         if alc.norma(u, 2) > tol:
             u_n = normalizarVector(u, 2)

@@ -1,16 +1,18 @@
 # Test L06-metpot2k, Aval
 
 import numpy as np
+from modulo.moduloALC import *
+from modulo.moduloALCaux import*
 
+def diagRH(A, tol = 1e-15, K = 1000):
+    n = cantFilas(A)
+    v1, l1 = metpot2k(A, tol, K)
+    resta = restaVectorial(colCanonico(n,0), v1)
+    matrizResta = productoVectorColumnaPorFila(resta, traspuesta(resta))
+    escalar = 2 / (norma(resta, 2)**2)
+    Hv1 = nIdentidad(n) - productoEscalar(matrizResta, escalar)
 
-
-
-
-#### TESTEOS
-# Tests metpot2k
-
-
-
+    # if n == 2:
 
 
 # Tests diagRH
