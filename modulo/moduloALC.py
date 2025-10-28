@@ -5,8 +5,6 @@ from modulo.moduloALCaux import *
 #   - ver si esta bien nops en QR-GS
 #   - hacer nuestro propio inverso y reemplazar linalg.inv
 #   - hacer clase matriz
-#   - hacer diagRH
-#   - hacer resta matricial
 #   - ver si esta bien lo de poner 1s en la diagonal para transiciones_al_azar_uniformes
 
 def error(x, y):
@@ -305,7 +303,7 @@ def QR_con_HH (A, tol = 1e-12):
         
         if alc.norma(u, 2) > tol:
             u_n = normalizarVector(u, 2)
-            uut = productoVectorColumnaPorFila(traspuesta(u_n), u_n)
+            uut = productoExterno(traspuesta(u_n), u_n)
             dosuut = productoEscalar(2, uut)
             H_k = nIdentidad(m - k) - dosuut
             H_k_ext = extenderConIdentidad(H_k, m)

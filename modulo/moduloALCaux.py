@@ -41,14 +41,13 @@ def productoMatricial(A, B):# A es nxp, B es pxm
             res[i][j] = value
     return res  
 
-def productoVectorColumnaPorFila(u, v):
+def productoExterno(u, v):
     n = cantFilas(u)
     res = np.zeros((n, n))
     for i, ui in enumerate(u):
         for j, vj in enumerate(v):
             res[i][j] = ui[0] * vj
     return res
-
 
 
 def matricesIguales(A, B, atol = 1e-8):
@@ -90,11 +89,15 @@ def traspuesta(A):
             for j, value in enumerate(row):
                 res[j][i] = A[i][j]
 
+
     else:
         res = np.zeros((len(A),1))
         for i, value in enumerate(A):
             res[i][0] = value 
             
+    if len(res) == 1:
+        return res[0]
+    
     return res
 
 def dimension(A):
@@ -165,12 +168,19 @@ def productoInterno(u, v):
     
     return subtotal
 
-
 def productoEscalar(A, k):
+    return np.multiply(A, k)
     if isinstance(A, Iterable):
-        return [productoEscalar(ai, k) for ai in A]
+        return list(map(lambda elem: productoEscalar(elem, k), A))
     else:
-        return A * k
+        return A*k
+
+
+def restaMatricial(A, B):
+    res = A.copy()
+    for i in range(len(A)):
+        res[i] = restaVectorial(A[i],B[i])
+    return res
 
 def extenderConIdentidad(A, p): #solo para matrices cuadradas
     res = nIdentidad(p)
@@ -184,8 +194,6 @@ def extenderConIdentidad(A, p): #solo para matrices cuadradas
 
 def restaVectorial(u, v):
     res = []
-    if isinstance(u[0], Iterable):
-        return restaVectorial(traspuesta(u),traspuesta(v))
 
     for ui, vi in zip(u,v):
         res.append(ui - vi)
@@ -206,3 +214,11 @@ def signo(n):
     else:
         return 0
     
+def submatriz(A, l, k):
+    res = np.zeros((k-l+1, k-l+1))
+    
+    for i in range(l-1, k):
+        for j in range(l-1, k):
+            res[i-l-1][j-l-1] = A[i][j]
+
+    return res
