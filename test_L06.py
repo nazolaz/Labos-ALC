@@ -4,18 +4,40 @@ import numpy as np
 from modulo.moduloALC import *
 from modulo.moduloALCaux import*
 
+np.random.seed(2)
+
 def diagRH(A, tol = 1e-15, K = 1000):
     n = len(A)
-    v1, l1, kk = metpot2k(A, tol, K)
+    A = A.copy()
+    lambdas, vectors = np.linalg.eig(A)
+    lambdamax = 0
+    maxi = -1
+    for i in range(len(vectors)):
+        l = lambdas[i]
+        if l > lambdamax:
+            lambdamax = l
+            maxi = i
+    v1 = vectors[:,maxi]
+    l1 = lambdas[maxi]
+    v1propio, l1propio, _ = metpot2k(A, tol, K)
+    print("numpy", v1, l1)
+    print("propio", v1propio, l1propio)
+    print("producto")
+    print((A @ v1propio).T @ v1propio)
+    print((A @ v1).T @ v1)
+
+
+
     #print(kk)
     # resta = normalizarVector(restaVectorial(colCanonico(n,0), v1),2)
     # matrizResta = productoExterno(resta, traspuesta(resta))
     # Hv1 = restaMatricial(nIdentidad(n), productoEscalar(matrizResta, 2))
     # mid = productoMatricial(Hv1,productoMatricial(A,traspuesta(Hv1)))
-    resta = colCanonico(n,0) - v1
+    resta = colCanonico(n,0) - v1 
+    producto = resta @ resta.T
     norma = np.linalg.norm(resta)
-    restaNormalizada = resta / norma
-    matrizResta = restaNormalizada @ restaNormalizada.T
+    matrizNormalizada = producto / (norma ** 2) 
+    matrizResta = matrizNormalizada @ matrizNormalizada.T
     Hv1 = np.eye(n) - 2 * matrizResta
 
     mid = Hv1 @ A @ Hv1.T
@@ -49,10 +71,11 @@ assert np.allclose(np.abs(S.T@SRH),np.eye(A.shape[0]),atol=1e-7)
 
 # Pedimos que pase el 95% de los casos
 exitos = 0
-for i in range(1):
+sumaError = 0
+for i in range(100):
     A = np.random.random((5,5))
     A = 0.5*(A+A.T)
-    S,D = diagRH(A,tol=1e-15,K=1e7)
+    S,D = diagRH(A,tol=1e-15,K=1e5)
     ARH = S@D@S.T
     e = normaExacta(ARH-A,p='inf')
     if e < 1e-5: 
