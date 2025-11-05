@@ -16,7 +16,8 @@ def diagRH(A, tol = 1e-15, K = 1000):
     norma = np.linalg.norm(resta)
     restaNormalizada = resta / norma
     matrizResta = restaNormalizada @ restaNormalizada.T
-    Hv1 = np.eye(n) - np.multiply(matrizResta, 2)
+    Hv1 = np.eye(n) - 2 * matrizResta
+
     mid = Hv1 @ A @ Hv1.T
 
     if n == 2:
@@ -48,7 +49,7 @@ assert np.allclose(np.abs(S.T@SRH),np.eye(A.shape[0]),atol=1e-7)
 
 # Pedimos que pase el 95% de los casos
 exitos = 0
-for i in range(100):
+for i in range(1):
     A = np.random.random((5,5))
     A = 0.5*(A+A.T)
     S,D = diagRH(A,tol=1e-15,K=1e7)

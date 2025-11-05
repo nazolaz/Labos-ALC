@@ -1,5 +1,5 @@
 import numpy as np
-from modulo.moduloALCaux import *
+from moduloALCaux import *
 
 # POR HACER/TERMINAR
 #   - ver si esta bien nops en QR-GS

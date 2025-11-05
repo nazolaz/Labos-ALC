@@ -1,5 +1,5 @@
 import numpy as np
-import modulo.moduloALC as alc
+import moduloALC as alc
 from collections.abc import Iterable
 
 def calcularAx(A, x):

@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from modulo.moduloALC import *
+from moduloALC import *
 
 class TestModuloALC(unittest.TestCase):
 
@@ -309,3 +309,7 @@ class TestModuloALC(unittest.TestCase):
 
         Q4c,R4c = calculaQR(A4,metodo='RH')
         check_QR(Q4c,R4c,A4)
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
