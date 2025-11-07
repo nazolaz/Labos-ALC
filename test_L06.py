@@ -10,17 +10,23 @@ def diagRH(A, tol = 1e-15, K = 1000):
     n = len(A)
     v1, l1, _ = metpot2k(A, tol, K)
 
+
+    # RESTA NORMALIZADA DE UNA PARA MAXIMA AURA
     resta = normalizarVector(restaVectorial(colCanonico(n,0), v1),2)
+
+    # MATRIZ e1 - v1 YA NORMALIZADA
     producto = productoExterno(resta, resta)
      
-    matrizResta = productoMatricial(producto, traspuesta(producto))
     
-    Hv1 = restaMatricial(nIdentidad(n), productoEscalar(matrizResta, 2))
+    Hv1 = restaMatricial(nIdentidad(n), productoEscalar(producto, 2))
 
+
+    # mid???
     mid = productoMatricial(Hv1,productoMatricial(A,traspuesta(Hv1)))
 
     if n == 2:
         return Hv1, mid
+    
     
     Amoño = submatriz(mid, 2, n)
     Smoño, Dmoño = diagRH(Amoño, tol, K)
@@ -29,7 +35,7 @@ def diagRH(A, tol = 1e-15, K = 1000):
     D[0][0] = l1
 
     S = productoMatricial(Hv1, extenderConIdentidad(Smoño, n))
-    
+
     return S, D
 
 
