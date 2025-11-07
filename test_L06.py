@@ -8,51 +8,30 @@ np.random.seed(2)
 
 def diagRH(A, tol = 1e-15, K = 1000):
     n = len(A)
-    A = A.copy()
-    lambdas, vectors = np.linalg.eig(A)
-    lambdamax = 0
-    maxi = -1
-    for i in range(len(vectors)):
-        l = lambdas[i]
-        if l > lambdamax:
-            lambdamax = l
-            maxi = i
-    v1 = vectors[:,maxi]
-    l1 = lambdas[maxi]
-    v1propio, l1propio, _ = metpot2k(A, tol, K)
-    print("numpy", v1, l1)
-    print("propio", v1propio, l1propio)
-    print("producto")
-    print((A @ v1propio).T @ v1propio)
-    print((A @ v1).T @ v1)
+    v1, l1, _ = metpot2k(A, tol, K)
 
+    resta = normalizarVector(restaVectorial(colCanonico(n,0), v1),2)
+    producto = productoExterno(resta, resta)
+     
+    matrizResta = productoMatricial(producto, traspuesta(producto))
+    
+    Hv1 = restaMatricial(nIdentidad(n), productoEscalar(matrizResta, 2))
 
-
-    #print(kk)
-    # resta = normalizarVector(restaVectorial(colCanonico(n,0), v1),2)
-    # matrizResta = productoExterno(resta, traspuesta(resta))
-    # Hv1 = restaMatricial(nIdentidad(n), productoEscalar(matrizResta, 2))
-    # mid = productoMatricial(Hv1,productoMatricial(A,traspuesta(Hv1)))
-    resta = colCanonico(n,0) - v1 
-    producto = resta @ resta.T
-    norma = np.linalg.norm(resta)
-    matrizNormalizada = producto / (norma ** 2) 
-    matrizResta = matrizNormalizada @ matrizNormalizada.T
-    Hv1 = np.eye(n) - 2 * matrizResta
-
-    mid = Hv1 @ A @ Hv1.T
+    mid = productoMatricial(Hv1,productoMatricial(A,traspuesta(Hv1)))
 
     if n == 2:
         return Hv1, mid
     
     Amoño = submatriz(mid, 2, n)
     Smoño, Dmoño = diagRH(Amoño, tol, K)
+
     D = extenderConIdentidad(Dmoño, n)
     D[0][0] = l1
-    S = Hv1 @ extenderConIdentidad(Smoño, n)
+
+    S = productoMatricial(Hv1, extenderConIdentidad(Smoño, n))
+    
     return S, D
 
-#
 
 # Tests diagRH
 D = np.diag([1,0.5,0.25])
@@ -80,7 +59,7 @@ for i in range(100):
     e = normaExacta(ARH-A,p='inf')
     if e < 1e-5: 
         exitos += 1
+print("EXITOS: ", exitos)
 assert exitos >= 95
-
 
 
