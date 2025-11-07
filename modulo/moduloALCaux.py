@@ -169,7 +169,6 @@ def productoInterno(u, v):
     return subtotal
 
 def productoEscalar(A, k):
-    return np.multiply(A, k)
     if isinstance(A, Iterable):
         return list(map(lambda elem: productoEscalar(elem, k), A))
     else:
@@ -183,6 +182,7 @@ def restaMatricial(A, B):
     return res
 
 def extenderConIdentidad(A, p): #solo para matrices cuadradas
+
     res = nIdentidad(p)
     n = cantFilas(A)
     for i in range(p - n, p):
@@ -215,10 +215,6 @@ def signo(n):
         return 0
     
 def submatriz(A, l, k):
-    res = np.zeros((k-l+1, k-l+1))
-    
-    for i in range(l-1, k):
-        for j in range(l-1, k):
-            res[i-l-1][j-l-1] = A[i][j]
 
-    return res
+    return A[l-1:k, l-1:k].copy()
+
