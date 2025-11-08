@@ -1,5 +1,5 @@
 import numpy as np
-import modulo.moduloALC as alc
+import moduloALC as alc
 from collections.abc import Iterable
 
 def calcularAx(A, x):
@@ -83,7 +83,10 @@ def normalizarVector(vector, p):
     return np.array(vectorNormalizado)
 
 def traspuesta(A):
-    if (isinstance(A[0], Iterable)):
+    if (len(A) == 0):
+        return A
+
+    elif (isinstance(A[0], Iterable)):
         res = np.zeros((cantColumnas(A), cantFilas(A)))
         for i, row in enumerate(A):
             for j, value in enumerate(row):
@@ -94,9 +97,6 @@ def traspuesta(A):
         res = np.zeros((len(A),1))
         for i, value in enumerate(A):
             res[i][0] = value 
-            
-    if len(res) == 1:
-        return res[0]
     
     return res
 
@@ -182,7 +182,6 @@ def restaMatricial(A, B):
     return res
 
 def extenderConIdentidad(A, p): #solo para matrices cuadradas
-
     res = nIdentidad(p)
     n = cantFilas(A)
     for i in range(p - n, p):

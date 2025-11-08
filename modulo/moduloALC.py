@@ -1,5 +1,5 @@
 import numpy as np
-from modulo.moduloALCaux import *
+from moduloALCaux import *
 
 # POR HACER/TERMINAR
 #   - ver si esta bien nops en QR-GS
@@ -64,7 +64,7 @@ def normaliza(Xs, p):
 
 def normaExacta(A, p = [1, 'inf']):
     if p == 1:
-        return normaInf(A.T)
+        return normaInf(traspuesta(A))
     
     elif p == 'inf':
         return normaInf(A)
@@ -201,13 +201,13 @@ def calculaLDV(A):
     if(U is None):
         return None, None, None, 0
 
-    Vt, D, nops2 = calculaLU(U.T)
+    Vt, D, nops2 = calculaLU(traspuesta(U))
 
 
     if Vt is None:
         return None, None, None, 0
     
-    return L, D, Vt.T, nops1 + nops2
+    return L, D, traspuesta(Vt), nops1 + nops2
 
 def esSDP(A, atol=1e-10):
     if(not (esSimetrica(A))):
@@ -324,3 +324,91 @@ def calculaQR(A, metodo = 'RH', tol = 1e-12, nops = False):
     
     else: 
         return None, None, None
+    
+def diagRH(A, tol = 1e-15, K = 1000):
+    n = len(A)
+    v1, l1, _ = metpot2k(A, tol, K)
+
+    resta = normalizarVector(restaVectorial(colCanonico(n,0), v1),2)
+    producto = productoExterno(resta, resta)    
+    Hv1 = restaMatricial(nIdentidad(n), productoEscalar(producto, 2))
+    mid = productoMatricial(Hv1,productoMatricial(A,traspuesta(Hv1)))
+
+    if n == 2:
+        return Hv1, mid
+    
+    Amoño = submatriz(mid, 2, n)
+    Smoño, Dmoño = diagRH(Amoño, tol, K)
+
+    D = extenderConIdentidad(Dmoño, n)
+    D[0][0] = l1
+
+    S = productoMatricial(Hv1, extenderConIdentidad(Smoño, n))
+
+    return S, D
+
+def transiciones_al_azar_continuas(n):
+    t = []
+    for i in range(n):
+        randvec = np.random.uniform(0, 1, n)
+        t.append(randvec)
+    tnormalizado = normaliza(t, 1)
+    return traspuesta(np.array(tnormalizado))
+
+
+def transiciones_al_azar_uniformes(n,thres):
+    if n == 1:
+        return np.array([[1]])
+
+    t = []
+    for i in range(n):
+        randvec = np.random.uniform(0, 1, n)
+        t.append(randvec)
+
+    for i in range(len(t)):
+        for j in range(len(t[0])):
+            if t[i][j] < thres:
+                t[i][j] = 1
+            else:
+                t[i][j] = 0
+            if i == j:
+                t[i][i] = 1
+    tnormalizado = normaliza(t, 1)
+    return np.array(traspuesta(tnormalizado))
+
+#funciona pq λi es autovalor sii σi es valor singular
+def nucleo(A,tol=1e-15):
+    normalA = productoMatricial(traspuesta(A), A)
+    SA, DA = diagRH(normalA)
+    nucleo = []
+    
+    #consigo la columna respectiva del autovalor 0 
+    for i in range(len(DA)):
+            if DA[i][i] <= tol:
+                nucleo.append(conseguirColumna(SA, i))
+                
+    return traspuesta(np.array(nucleo))
+
+
+def crea_rala(listado,m_filas,n_columnas,tol=1e-15):
+    if len(listado) == 0:
+        #cualquiera pero los tests esperan esto
+        return [], (m_filas, n_columnas)
+    
+    aristas = {}
+
+    for i in range(len(listado[0])):
+        ij_valor = listado[2][i]
+        if ij_valor > tol:
+            ij = ((listado[0][i]),listado[1][i])
+            aristas[ij] =  ij_valor
+    return aristas, (m_filas, n_columnas)
+
+def multiplica_rala_vector(A,v):
+    w = np.zeros(v.shape)
+    ijs = A.keys()
+    
+    for parIj in ijs:
+        w[parIj[0]] += A[parIj] * v[parIj[1]]
+
+    return w
