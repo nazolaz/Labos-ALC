@@ -229,20 +229,20 @@ def metpot2k(A, tol=1e-15, K=1000.0):
     v = np.random.rand(n,1)
     vmoñotemp = f_A(A, v)
     vmoño = f_A(A, vmoñotemp)
-    e = float(productoInterno(vmoño, v)[0]) # NASTY
+    e = float(productoInterno(vmoño, v))
     k = 0
     while( abs(e - 1) > tol and k < K):
 
         v = vmoño
         vmoñotemp = f_A(A, v)
         vmoño = f_A(A, vmoñotemp)
-        e = float(productoInterno(vmoño, v)[0]) # NASTY
+        e = float(productoInterno(vmoño, v))
         k = k + 1
     
     ax = calcularAx(A, vmoño)
     autovalor = productoInterno(vmoño, ax)
 
-    return v, autovalor, k
+    return vmoño, autovalor, k
 
 
 def f_A(A, v):
