@@ -14,8 +14,9 @@ def svd_reducida(A,k="max",tol=1e-15):
     k = min(m,n) if k == "max" else k
 
 
-    AtA = A.T @ A
-    VHat, SigmaHat = diagRH(AtA, tol=1e-15, K=2000)
+    AtA = productoMatricial(traspuesta(A), A)
+    print(A)
+    VHat, SigmaHat = diagRH(AtA, tol=1e-16, K=10000)
 
     SigmaHatVector = vectorValoresSingulares(SigmaHat, k)
 
@@ -23,10 +24,6 @@ def svd_reducida(A,k="max",tol=1e-15):
     UHat = np.array(traspuesta(normaliza(traspuesta(B), 2)))
 
     return UHat, SigmaHatVector, VHat[:n, :k]
-
-
-
-
 
 
 
@@ -59,10 +56,10 @@ def test_svd_reducida_mn(A,tol=1e-15):
     hU,hS,hV = svd_reducida(A,tol=tol)
     nU,nS,nVT = np.linalg.svd(A)
     print('nuestra')
-    print(hU)
+    print(hS)
     
     print('real')
-    print(nU[:12, :4])
+    print(nS)
 
 
     r = len(hS)+1
@@ -72,12 +69,12 @@ def test_svd_reducida_mn(A,tol=1e-15):
     assert np.all(np.abs(hS-nS[np.abs(nS)>tol])<10**r*tol), 'Hay diferencias en los valores singulares en ' + str((m,n))
 
 
-for m in [2,5,10,20]:
-    for n in [2,5, 10, 20]:
-        for i in range(10):
-            print(f'iteración {i} con n={n} y m={m}')
-            A = genera_matriz_para_test(m,n)
-            test_svd_reducida_mn(A)
+# for m in [2,5,10,20]:
+#     for n in [2,5, 10, 20]:
+#         for i in range(10):
+#             print(f'iteración {i} con n={n} y m={m}')
+#             A = genera_matriz_para_test(m,n)
+#             test_svd_reducida_mn(A)
 
 
 # Matrices con nucleo

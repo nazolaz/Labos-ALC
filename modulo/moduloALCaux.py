@@ -217,3 +217,15 @@ def submatriz(A, l, k):
 
     return A[l-1:k, l-1:k].copy()
 
+def cholesky(A):
+    # REQUIERE A SDP
+    L, D, _, _ = alc.calculaLDV(A)
+
+
+
+    for i in range(len(D)):
+        D[i][i] = np.sqrt(D[i][i])
+
+    Lmoño = productoMatricial(L, D)
+
+    return Lmoño, traspuesta(Lmoño)
