@@ -2,10 +2,8 @@ import numpy as np
 from moduloALCaux import *
 
 # POR HACER/TERMINAR
-#   - ver si esta bien nops en QR-GS
 #   - hacer nuestro propio inverso y reemplazar linalg.inv
-#   - hacer clase matriz
-#   - ver si esta bien lo de poner 1s en la diagonal para transiciones_al_azar_uniformes
+#   - terminar SVD
 
 def error(x, y):
     return abs(np.float64(x) - np.float64(y))

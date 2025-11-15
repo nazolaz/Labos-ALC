@@ -221,8 +221,6 @@ def cholesky(A):
     # REQUIERE A SDP
     L, D, _, _ = alc.calculaLDV(A)
 
-
-
     for i in range(len(D)):
         D[i][i] = np.sqrt(D[i][i])
 
