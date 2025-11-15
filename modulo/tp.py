@@ -1,17 +1,19 @@
 from moduloALC import *
 from moduloALCaux import *
 
-def fully_connected_lineal(X, Y, tol=1e-15, method = "Cholesky"):
+def fully_connected_lineal(X, Y, tol=1e-15, method = "QR"):
     match method:
         case "Cholesky":
-            return choleskyFCN(X,Y, tol)
+            return pinvEcuacionesNormales(X, Y, tol)
         case "SVD":
             return svdFCN(X, Y, tol)
-        case "QR"
+        case "QR-HH":
             return qrFCN(X, Y, tol)
+        case "QR-GS":
+            return ""
     
 
-def choleskyFCN(X, Y, tol=1e-15):
+def pinvEcuacionesNormales(X, Y, tol=1e-15):
     n, p = X.shape
     _, Sigma, _ = np.linalg.svd(X)
     rangoX = 0
@@ -24,7 +26,6 @@ def choleskyFCN(X, Y, tol=1e-15):
         L, Lt = cholesky(XtX)
         Utraspuesta = np.array((n,p))
         for i in range(n):
-
             y_i = sustitucionHaciaDelante(L, X[i]) # iesima columna de X traspuesta
             u_i = sustitucionHaciaAtras(Lt, y_i)
             Utraspuesta[i] = u_i
@@ -50,8 +51,21 @@ def choleskyFCN(X, Y, tol=1e-15):
 
     return W
 
+
 def svdFCN(X, Y, tol = 1e-15):
     pass
 
-def qrFCN(X, Y, tol = 1e-15):
-    pass
+
+def qrFCN(Q, R, Y):
+    n = R.shape[0]
+    p = Q.shape[0]
+    
+    V = np.zeros((p, n))
+    
+    for i in range(p):
+        b = conseguirColumna(traspuesta(Q),i)
+        V[i] = sustitucionHaciaAtras(R, b) # SI PONGO LAS SOLS EN FILAS CONSIGO V DE UNA (+1000 DE AURA)
+
+    return productoMatricial(Y,  V)
+
+    

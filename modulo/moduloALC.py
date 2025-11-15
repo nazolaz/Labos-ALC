@@ -124,7 +124,7 @@ def sustitucionHaciaAtras(A, b):
             sumatoria += A[i][k] * valoresX[k]
 
         if cocienteActual == 0:
-            valoresX[i] = np.nan  # o puedes lanzar una excepción si prefieres
+            valoresX[i] = np.nan  
         else:
             valoresX[i] = (b[i] - sumatoria)/cocienteActual
     return valoresX
