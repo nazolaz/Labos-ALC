@@ -1,8 +1,17 @@
 from moduloALC import *
 from moduloALCaux import *
 
+def fully_connected_lineal(X, Y, tol=1e-15, method = "Cholesky"):
+    match method:
+        case "Cholesky":
+            return choleskyFCN(X,Y, tol)
+        case "SVD":
+            return svdFCN(X, Y, tol)
+        case "QR"
+            return qrFCN(X, Y, tol)
+    
 
-def busquedaW(X, Y, tol=1e-15):
+def choleskyFCN(X, Y, tol=1e-15):
     n, p = X.shape
     _, Sigma, _ = np.linalg.svd(X)
     rangoX = 0
@@ -40,3 +49,9 @@ def busquedaW(X, Y, tol=1e-15):
         W = productoMatricial(Y, Xinv)
 
     return W
+
+def svdFCN(X, Y, tol = 1e-15):
+    pass
+
+def qrFCN(X, Y, tol = 1e-15):
+    pass
