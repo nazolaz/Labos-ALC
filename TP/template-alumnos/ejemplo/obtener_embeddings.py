@@ -38,7 +38,7 @@ weights = EfficientNet_B3_Weights.DEFAULT
 preprocess = weights.transforms()
 model = efficientnet_b3(weights=EfficientNet_B3_Weights.IMAGENET1K_V1)
 model.eval()
-imagenes = ['cat.7.jpg', 'dog.4.jpg']
+imagenes = ['TP/template-alumnos/ejemplo/cat.7.jpg', 'TP/template-alumnos/ejemplo/dog.4.jpg']
 
 # Definir listas para reservar las imagenes, embedding y luego graficar
 images_processed = []
