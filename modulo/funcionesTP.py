@@ -79,4 +79,7 @@ def esPseudoInversa(X, pX, tol= 1e-8):
 
     condicion1 = matricesIguales(X, productoMatricial(X,pX_X))
     condicion2 = matricesIguales(pX, productoMatricial(pX_X,pX))
-    condicion3 = esSimetrica()
+    condicion3 = esSimetrica(productoMatricial(X, pX))
+    condicion4 = esSimetrica(productoMatricial(pX, X))
+
+    return condicion1 & condicion2 & condicion3 & condicion4
