@@ -209,7 +209,7 @@ def signo(n):
     
 def submatriz(A, l, k):
 
-    return A[l-1:k, l-1:k].copy()
+    return A[l-1:k, l-1:k]
 
 def cholesky(A):
 
