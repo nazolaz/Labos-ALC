@@ -29,14 +29,14 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
         print('producto hecho!')
         
         
-        L, Lt = cholesky(XtX)
+        L = cholesky(XtX)
         Utraspuesta = np.array((n,p))
         
         for i in range(n):
             print('sustitución...')
         
             y_i = sustitucionHaciaDelante(L, X[i]) # iesima columna de X traspuesta
-            u_i = sustitucionHaciaAtras(Lt, y_i)
+            u_i = sustitucionHaciaAtras(traspuesta(L), y_i)
             Utraspuesta[i] = u_i
         U = traspuesta(Utraspuesta)
         W = productoMatricial(Y, U)
@@ -48,13 +48,13 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
 
 
 
-        L, Lt = cholesky(XXt)
+        L = cholesky(XXt)
         V = np.array((n,p))
         Xtraspuesta = traspuesta(X)
         for i in range(n):
             print('sustitución...')
             y_i = sustitucionHaciaDelante(L, Xtraspuesta[i]) # iesima columna de X
-            v_i = sustitucionHaciaAtras(Lt, y_i)
+            v_i = sustitucionHaciaAtras(traspuesta(L), y_i)
             V[i] = v_i
         W = productoMatricial(Y, V)
 
@@ -88,9 +88,9 @@ def esPseudoInversa(X, pX, tol= 1e-8):
     X_pX = productoMatricial(X, pX)
     pX_X = productoMatricial(pX, X)
 
-    condicion1 = matricesIguales(X, productoMatricial(X,pX_X))
-    condicion2 = matricesIguales(pX, productoMatricial(pX_X,pX))
-    condicion3 = esSimetrica(productoMatricial(X, pX))
-    condicion4 = esSimetrica(productoMatricial(pX, X))
+    condicion1 = matricesIguales(X, productoMatricial(X,pX_X), tol)
+    condicion2 = matricesIguales(pX, productoMatricial(pX_X,pX), tol)
+    condicion3 = esSimetrica(productoMatricial(X, pX), tol)
+    condicion4 = esSimetrica(productoMatricial(pX, X), tol)
 
     return condicion1 & condicion2 & condicion3 & condicion4

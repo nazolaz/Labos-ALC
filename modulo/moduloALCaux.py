@@ -17,11 +17,10 @@ def normaInf(A):
     return max(sumatorias)
 
 def esSimetrica(A, tol = 1e-8): 
-    A_t = traspuesta(A)
 
     for i, row in enumerate(A):
-        for j, value in enumerate(row):
-            if alc.error(A[i][j], A_t[i][j]) > tol:
+        for j in range(len(row)):
+            if alc.error(A[i][j], A[j][i]) > tol:
                 return False
             
     return True
@@ -219,6 +218,8 @@ def submatriz(A, l, k):
     return A[l-1:k, l-1:k].copy()
 
 def cholesky(A):
+
+    return np.linalg.cholesky(A)
     # REQUIERE A SDP
     L, D, _, _ = alc.calculaLDV(A)
 

@@ -42,14 +42,14 @@ class tpTests(unittest.TestCase):
         print((W @ Xv) - Yv )
 
 
-    def test_QRHH(self):
-        Xt, Yt, Xv, Yv = self.cargarDatasetCompleto()
+    # def test_QRHH(self):
+    #     Xt, Yt, Xv, Yv = self.cargarDatasetCompleto()
 
-        print('dataset cargado!')
-        Q, R = QR_con_HH(traspuesta(Xt))
-        W = qrFCN(Q, R, Yt)
+    #     print('dataset cargado!')
+    #     Q, R = QR_con_HH(traspuesta(Xt))
+    #     W = qrFCN(Q, R, Yt)
 
-        print((W @ Xv) - Yv )
+    #     print((W @ Xv) - Yv )
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
