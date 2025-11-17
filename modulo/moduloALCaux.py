@@ -16,12 +16,12 @@ def normaInf(A):
     
     return max(sumatorias)
 
-def esSimetrica(A): #podria hacerse con tol pero no corren los tests
+def esSimetrica(A, tol = 1e-8): 
     if not esCuadrada(A):
         return False
     for i, row in enumerate(A):
         for j, value in enumerate(row):
-            if A[j][i] != A[i][j]:
+            if alc.error_relativo(A[j][i], A[i][j]) > tol:
                 return False
     return True
 

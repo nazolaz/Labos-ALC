@@ -208,7 +208,7 @@ def calculaLDV(A):
     return L, D, traspuesta(Vt), nops1 + nops2
 
 def esSDP(A, atol=1e-10):
-    if(not (esSimetrica(A))):
+    if(not (esSimetrica(A, atol))):
         return False
     
     L, D, Lt, _ = calculaLDV(A)

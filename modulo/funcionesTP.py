@@ -84,3 +84,10 @@ def qrFCN(Q, R, Y):
     return productoMatricial(Y,  V)
 
     
+def esPseudoInversa(X, pX, tol= 1e-8):
+    X_pX = productoMatricial(X, pX)
+    pX_X = productoMatricial(pX, X)
+
+    condicion1 = matricesIguales(X, productoMatricial(X,pX_X))
+    condicion2 = matricesIguales(pX, productoMatricial(pX_X,pX))
+    condicion3 = esSimetrica()
