@@ -3,8 +3,10 @@ from moduloALCaux import *
 from tqdm import tqdm
 
 # POR HACER/TERMINAR
+#   - ver si esta bien nops en QR-GS
 #   - hacer nuestro propio inverso y reemplazar linalg.inv
-#   - terminar SVD
+#   - hacer clase matriz
+#   - ver si esta bien lo de poner 1s en la diagonal para transiciones_al_azar_uniformes
 
 def error(x, y):
     return abs(np.float64(x) - np.float64(y))
@@ -59,7 +61,7 @@ def normaliza(Xs, p):
         res = normalizarVector(vector, p)
         XsNormalizado.append(res)
 
-    return XsNormalizado
+    return np.array(XsNormalizado)
 
 def normaExacta(A, p = [1, 'inf']):
     if p == 1:
@@ -125,7 +127,7 @@ def sustitucionHaciaAtras(A, b):
             sumatoria += A[i][k] * valoresX[k]
 
         if cocienteActual == 0:
-            valoresX[i] = np.nan  
+            valoresX[i] = np.nan  # o puedes lanzar una excepción si prefieres
         else:
             valoresX[i] = (b[i] - sumatoria)/cocienteActual
     return valoresX
@@ -209,7 +211,7 @@ def calculaLDV(A):
     return L, D, traspuesta(Vt), nops1 + nops2
 
 def esSDP(A, atol=1e-10):
-    if(not (esSimetrica(A, atol))):
+    if(not (esSimetrica(A))):
         return False
     
     L, D, Lt, _ = calculaLDV(A)
