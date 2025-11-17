@@ -15,15 +15,22 @@ def svd_reducida(A,k="max",tol=1e-15):
 
 
     AtA = productoMatricial(traspuesta(A), A)
-    print(A)
     VHat, SigmaHat = diagRH(AtA, tol=1e-16, K=10000)
 
     SigmaHatVector = vectorValoresSingulares(SigmaHat, k)
 
     B = productoMatricial(A, VHat)
-    UHat = np.array(traspuesta(normaliza(traspuesta(B), 2)))
+    UHatTraspuesta = traspuesta(B)
+    for i in range(len(SigmaHatVector)):
 
-    return UHat, SigmaHatVector, VHat[:n, :k]
+        if SigmaHatVector[i] > tol:
+            UHatTraspuesta[i] = UHatTraspuesta[i] / SigmaHatVector[i]
+        else:
+            UHatTraspuesta[i] = np.zeros(m)
+
+    UHat = traspuesta(UHatTraspuesta)
+
+    return UHat[:m, :k], SigmaHatVector, VHat[:n, :k]
 
 
 
@@ -43,23 +50,15 @@ def genera_matriz_para_test(m,n=2,tam_nucleo=0):
     return(A)
 
 
-# atest = genera_matriz_para_test(2,5)
-# hU,hS,hV = svd_reducida(atest)
-# nU,nS,nVT = np.linalg.svd(atest)
-
-
-# print('V nuestra', hV.T)
-# print('V real', nVT)
-
 def test_svd_reducida_mn(A,tol=1e-15):
     m,n = A.shape
     hU,hS,hV = svd_reducida(A,tol=tol)
-    nU,nS,nVT = np.linalg.svd(A)
+    nU,nS,nVT = np.linalg.svd(A, full_matrices=False)
     print('nuestra')
-    print(hS)
+    print(hV)
     
     print('real')
-    print(nS)
+    print(nVT.T)
 
 
     r = len(hS)+1
