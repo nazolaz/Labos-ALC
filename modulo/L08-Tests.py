@@ -1,6 +1,10 @@
 import numpy as np
 from moduloALC import *
 from moduloALCaux import *
+import sys
+sys.setrecursionlimit(2000)
+
+
 # Tests L08
 def svd_reducida(A,k="max",tol=1e-15):
     """

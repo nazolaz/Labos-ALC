@@ -1,7 +1,7 @@
 from moduloALC import *
 from moduloALCaux import *
 import numpy as np
-
+from tqdm import tqdm
 
 def fully_connected_lineal(X, Y, tol=1e-15, method = "QR"):
     match method:
@@ -54,8 +54,7 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
         
         V = np.zeros((p,n))
         Xtraspuesta = traspuesta(X)
-        for i in range(n):
-            print('sustitución...')
+        for i in tqdm(range(n)):
             y_i = sustitucionHaciaDelante(L, Xtraspuesta[i]) # iesima columna de X
             V[i] = sustitucionHaciaAtras(traspuesta(L), y_i)
 
