@@ -1,5 +1,6 @@
 import numpy as np
 from moduloALCaux import *
+from tqdm import tqdm
 
 # POR HACER/TERMINAR
 #   - hacer nuestro propio inverso y reemplazar linalg.inv
@@ -291,11 +292,10 @@ def QR_con_HH (A, tol = 1e-12):
     if m < n:
         return None, None
     
-    R = A.copy()
     Q = nIdentidad(m)
 
-    for k in range(n):
-        x = conseguirColumnaSufijo(R, k, k)
+    for k in tqdm(range(n)):
+        x = A[k:, k]
         a = (-1)*signo(x[0])*alc.norma(x, 2)
         u = x - productoEscalar(a, filaCanonica(n - k, 0))
         
@@ -305,10 +305,10 @@ def QR_con_HH (A, tol = 1e-12):
             dosuut = productoEscalar(2, uut)
             H_k = nIdentidad(n - k) - dosuut
             H_k_ext = extenderConIdentidad(H_k, m)
-            R = productoMatricial(H_k_ext, R)
+            A = productoMatricial(H_k_ext, A)
             Q = productoMatricial(Q, traspuesta(H_k_ext))
 
-    return Q, R
+    return Q, A
 
 def calculaQR(A, metodo = 'RH', tol = 1e-12, nops = False):
     if metodo == 'RH':

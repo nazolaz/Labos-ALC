@@ -1,6 +1,8 @@
 import numpy as np
 import moduloALC as alc
 from collections.abc import Iterable
+from tqdm import tqdm
+
 
 def calcularAx(A, x):
     res = np.zeros(cantFilas(A))  
@@ -28,25 +30,28 @@ def esSimetrica(A, tol = 1e-8):
 def esCuadrada(A):
     return cantColumnas(A) == cantFilas(A)
 
-def productoMatricial(A, B):# A es nxp, B es pxm
+def productoMatricial(A, B): # A es nxp, B es pxm
     n = cantFilas(A)
     p = cantFilas(B)
     m = cantColumnas(B)
-    res = np.empty((n, m))
+    
+    res = np.zeros((n, m))
+    
     for i in range(n):
-        for j in range(m):
-            value = 0
-            for k in range(p):
-                value += A[i][k] * B[k][j]
-            res[i][j] = value
-    return res  
+        for k in range(p):
+            if A[i][k] != 0:
+                value = A[i][k]
+                for j in range(m):
+                    res[i][j] += value * B[k][j]
+    return res
 
 def productoExterno(u, v):
     n = cantFilas(u)
     res = np.zeros((n, n))
     for i, ui in enumerate(u):
-        for j, vj in enumerate(v):
-            res[i][j] = ui[0] * vj
+        if ui[0] != 0:
+            for j, vj in enumerate(v):
+                res[i][j] = ui[0] * vj
     return res
 
 
@@ -71,16 +76,12 @@ def colCanonico(dimension, i):
     return columna
 
 def normalizarVector(vector, p):
-    vectorNormalizado = []
-
     normaVector = alc.norma(vector, p)
+    
     if normaVector == 0:
         return vector 
     
-    for xi in vector:
-        vectorNormalizado.append(xi/normaVector)
-
-    return np.array(vectorNormalizado)
+    return np.array(vector) / normaVector
 
 def traspuesta(A):
     if (len(A) == 0):
@@ -163,16 +164,14 @@ def conseguirColumnaSufijo(A, j, k):
 
 def productoInterno(u, v):
     subtotal = 0
-    for ui, vi in zip(u, v):
-        subtotal += ui*vi
+    
+    for ui, vi in zip(u.flat, v.flat):
+        subtotal += ui * vi
     
     return subtotal
 
 def productoEscalar(A, k):
-    if isinstance(A, Iterable):
-        return list(map(lambda elem: productoEscalar(elem, k), A))
-    else:
-        return A*k
+    return np.array(A) * k
 
 
 def restaMatricial(A, B):
@@ -192,12 +191,7 @@ def extenderConIdentidad(A, p): #solo para matrices cuadradas
     return res
 
 def restaVectorial(u, v):
-    res = []
-
-    for ui, vi in zip(u,v):
-        res.append(ui - vi)
-
-    return res
+    return u - v
 
 def nIdentidad(n):
     I = np.zeros((n,n))
