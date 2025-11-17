@@ -30,7 +30,7 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
         
         
         L = cholesky(XtX)
-        Utraspuesta = np.array((n,p))
+        Utraspuesta = np.zeros((n,p))
         
         for i in range(n):
             print('sustitución...')
@@ -39,7 +39,7 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
             u_i = sustitucionHaciaAtras(traspuesta(L), y_i)
             Utraspuesta[i] = u_i
         U = traspuesta(Utraspuesta)
-        W = productoMatricial(Y, U)
+        W = productoMatricial(U, Y)
 
 
     elif rangoX ==n and rangoX < p:
@@ -58,13 +58,13 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
             y_i = sustitucionHaciaDelante(L, Xtraspuesta[i]) # iesima columna de X
             V[i] = sustitucionHaciaAtras(traspuesta(L), y_i)
 
-        W = productoMatricial(Y, V)
+        W = productoMatricial(V, Y)
 
 
     elif rangoX == p and p == n:
         Xinv = inversa(X)
         print('inversa!')
-        W = productoMatricial(Y, Xinv)
+        W = productoMatricial(Xinv, Y)
 
     return W
 
