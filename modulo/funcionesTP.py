@@ -3,8 +3,6 @@ from moduloALCaux import *
 import numpy as np
 
 
-
-
 def fully_connected_lineal(X, Y, tol=1e-15, method = "QR"):
     match method:
         case "Cholesky":
@@ -24,12 +22,19 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
     for valorSingular in Sigma:
         if valorSingular > tol:
             rangoX += 1
+    print('rango ', rangoX)
 
     if rangoX == p and rangoX < n:
         XtX = productoMatricial(traspuesta(X), X)
+        print('producto hecho!')
+        
+        
         L, Lt = cholesky(XtX)
         Utraspuesta = np.array((n,p))
+        
         for i in range(n):
+            print('sustitución...')
+        
             y_i = sustitucionHaciaDelante(L, X[i]) # iesima columna de X traspuesta
             u_i = sustitucionHaciaAtras(Lt, y_i)
             Utraspuesta[i] = u_i
@@ -37,20 +42,26 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
         W = productoMatricial(Y, U)
 
 
-    if rangoX ==n and rangoX < p:
+    elif rangoX ==n and rangoX < p:
         XXt = productoMatricial(X, traspuesta(X))
+        print('producto hecho!')
+
+
+
         L, Lt = cholesky(XXt)
         V = np.array((n,p))
         Xtraspuesta = traspuesta(X)
         for i in range(n):
+            print('sustitución...')
             y_i = sustitucionHaciaDelante(L, Xtraspuesta[i]) # iesima columna de X
             v_i = sustitucionHaciaAtras(Lt, y_i)
             V[i] = v_i
         W = productoMatricial(Y, V)
 
 
-    if rangoX == p and p == n:
+    elif rangoX == p and p == n:
         Xinv = inversa(X)
+        print('inversa!')
         W = productoMatricial(Y, Xinv)
 
     return W
