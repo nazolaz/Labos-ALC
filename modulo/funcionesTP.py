@@ -22,18 +22,15 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
     for valorSingular in Sigma:
         if valorSingular > tol:
             rangoX += 1
-    print('rango ', rangoX)
 
     if rangoX == p and rangoX < n:
         XtX = productoMatricial(traspuesta(X), X)
-        print('producto hecho!')
         
         
         L = cholesky(XtX)
         Utraspuesta = np.zeros((n,p))
         
         for i in range(n):
-            print('sustitución...')
         
             y_i = sustitucionHaciaDelante(L, X[i]) # iesima columna de X traspuesta
             u_i = sustitucionHaciaAtras(traspuesta(L), y_i)
@@ -45,10 +42,8 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
     elif rangoX ==n and rangoX < p:
         # XXt = productoMatricial(X, traspuesta(X))
         XXt = X @ X.T
-        print('producto hecho!')
 
         L = cholesky(XXt)
-        print('cholesky hecho!')
         
         
         
@@ -63,14 +58,61 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
 
     elif rangoX == p and p == n:
         Xinv = inversa(X)
-        print('inversa!')
         W = productoMatricial(Xinv, Y)
 
     return W
 
 
 def svdFCN(X, Y, tol = 1e-15):
-    pass
+    n, p = X.shape
+    U, S, V = np.linalg.svd(X)
+ 
+    sigma_plus = np.zeros((p,n))
+    for i in range(len(S)):
+        sigma_plus[i,i] = 1 / S[i]
+
+
+
+
+
+
+
+# TEST BORRAR
+from pathlib import Path
+import numpy as np
+from funcionesTP import *
+
+def cargarDataset(carpeta: Path):
+    pathCats = carpeta.joinpath('cats/efficientnet_b3_embeddings.npy')
+    pathDogs = carpeta.joinpath('dogs/efficientnet_b3_embeddings.npy')
+
+    embeddingsCats = np.load(pathCats)
+    embeddingsDogs = np.load(pathDogs)
+
+    embeddings = np.concatenate((embeddingsCats, embeddingsDogs), axis=1)
+    _, m = embeddings.shape
+
+    Y = np.zeros((2,m))
+    for i in range(0, int(m/2)):
+        Y[0,i] = 1
+
+    for i in range(int(m/2), m):
+        Y[1,i] = 1
+
+    return embeddings, Y
+
+Xt, Yt = cargarDataset(Path('./TP/template-alumnos/dataset/cats_and_dogs/train'))
+
+svdFCN(Xt, Yt)
+
+
+
+
+
+
+
+
+
 
 
 def qrFCN(Q, R, Y):
