@@ -2,8 +2,6 @@ from pathlib import Path
 import numpy as np
 from funcionesTP import *
 
-
-
 def cargarDataset(carpeta: Path):
     pathCats = carpeta.joinpath('./cats/efficientnet_b3_embeddings.npy')
     pathDogs = carpeta.joinpath('./dogs/efficientnet_b3_embeddings.npy')
