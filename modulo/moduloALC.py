@@ -297,7 +297,7 @@ def QR_con_HH (A, tol = 1e-12):
     Q = nIdentidad(m)
 
     for k in tqdm(range(n)):
-        x = A[k:, k]
+        x = conseguirColumnaSufijo(A, k, k)
         a = (-1)*signo(x[0])*alc.norma(x, 2)
         u = x - productoEscalar(a, filaCanonica(n - k, 0))
         
