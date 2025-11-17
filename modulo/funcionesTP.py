@@ -74,16 +74,18 @@ def svdFCN(X, Y, tol = 1e-15):
 
 
 def qrFCN(Q, R, Y):
-    n = R.shape[0]
-    p = Q.shape[0]
+    #despejamos V haciendo R* V.T = Q.T
+    n = R.shape[0] #1536
+    p = Q.shape[0] #2000
     
     V = np.zeros((p, n))
-    
-    for i in range(p):
-        b = conseguirColumna(traspuesta(Q),i)
-        V[i] = sustitucionHaciaAtras(R, b) # SI PONGO LAS SOLS EN FILAS CONSIGO V DE UNA (+1000 DE AURA)
+
+    for i in tqdm(range(p)):
+        b = Q[i] # esto es igual a conseguirColumna(traspuesta(Q))
+        V[i] = sustitucionHaciaAtras(R, b)
 
     return productoMatricial(Y,  V)
+
 
     
 def esPseudoInversa(X, pX, tol= 1e-8):
