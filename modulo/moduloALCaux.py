@@ -144,11 +144,7 @@ def longitudVector(v):
     return len(v)
 
 def conseguirColumna(A, j):
-    columna = []
-    for k in range(cantColumnas(A)):
-        columna.append(A[k][j])
-
-    return np.array(columna)
+    return A[:, j] 
 
 def insertarColumna(A, b, j):
     for k in range(cantFilas(A)):

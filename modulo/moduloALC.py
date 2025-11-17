@@ -265,7 +265,7 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
     R[0][0] = norma(a_1, 2)
     nops += 2*n + 1
 
-    for j in range(1, n):
+    for j in tqdm(range(1, n)):
         qMoño_j = conseguirColumna(A, j)
 
         for k in range(0, j):
@@ -295,7 +295,7 @@ def QR_con_HH (A, tol = 1e-12):
     Q = nIdentidad(m)
 
     for k in tqdm(range(n)):
-        x = A[k:, k]
+        x = conseguirColumnaSufijo(A, k, k)
         a = (-1)*signo(x[0])*alc.norma(x, 2)
         u = x - productoEscalar(a, filaCanonica(n - k, 0))
         

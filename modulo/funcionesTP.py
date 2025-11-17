@@ -101,7 +101,7 @@ def cargarDataset(carpeta: Path):
 
     return embeddings, Y
 
-Xt, Yt = cargarDataset(Path('./TP/template-alumnos/dataset/cats_and_dogs/train'))
+Xt, Yt = cargarDataset(Path('../TP/template-alumnos/dataset/cats_and_dogs/train'))
 
 svdFCN(Xt, Yt)
 
