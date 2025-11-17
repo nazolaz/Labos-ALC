@@ -297,13 +297,13 @@ def QR_con_HH (A, tol = 1e-12):
     for k in range(n):
         x = conseguirColumnaSufijo(R, k, k)
         a = (-1)*signo(x[0])*alc.norma(x, 2)
-        u = x - productoEscalar(a, filaCanonica(m - k, 0))
+        u = x - productoEscalar(a, filaCanonica(n - k, 0))
         
         if alc.norma(u, 2) > tol:
             u_n = normalizarVector(u, 2)
             uut = productoExterno(traspuesta(u_n), u_n)
             dosuut = productoEscalar(2, uut)
-            H_k = nIdentidad(m - k) - dosuut
+            H_k = nIdentidad(n - k) - dosuut
             H_k_ext = extenderConIdentidad(H_k, m)
             R = productoMatricial(H_k_ext, R)
             Q = productoMatricial(Q, traspuesta(H_k_ext))
