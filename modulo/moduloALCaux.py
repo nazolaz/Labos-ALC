@@ -27,8 +27,6 @@ def esSimetrica(A, tol = 1e-8):
             
     return True
 
-def esCuadrada(A):
-    return cantColumnas(A) == cantFilas(A)
 
 def productoMatricial(A, B): # A es nxp, B es pxm
     n = cantFilas(A)
@@ -37,8 +35,8 @@ def productoMatricial(A, B): # A es nxp, B es pxm
     
     res = np.zeros((n, m))
     
-    print("producto matricial")
-    for i in tqdm(range(n)):
+    # print("producto matricial")
+    for i in (range(n)):
         for k in range(p):
             if A[i][k] != 0:
                 value = A[i][k]
@@ -102,9 +100,6 @@ def traspuesta(A):
     
     return res
 
-def dimension(A):
-    return cantFilas(A), cantColumnas(A)
-
 def triangSup(A):
     ATriangSup = A.copy()
 
@@ -141,15 +136,6 @@ def cantColumnas(A):
     else:
         return len(A)
 
-def longitudVector(v):
-    return len(v)
-
-def conseguirColumna(A, j):
-    return A[:, j] 
-
-def insertarColumna(A, b, j):
-    A[:, j] = b 
-    return A
 
 def conseguirColumnaSufijo(A, j, k):
     columna = []
@@ -204,8 +190,8 @@ def signo(n):
         return 0
     
 def submatriz(A, l, k):
-
     return A[l-1:k, l-1:k]
+
 
 def cholesky(A):
 

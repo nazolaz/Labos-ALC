@@ -147,7 +147,7 @@ def res_tri(L, b, inferior=True):
 
 def calculaLU(A):
     cant_op = 0
-    m, n = dimension(A)
+    m, n = A.shape
     Ac = A.copy()
     
     if m!=n:
@@ -264,21 +264,21 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
     R = np.zeros((n,n))
     nops = 0
 
-    a_1 = conseguirColumna(A, 0)
+    a_1 = A[:, 0]
     norma1 = norma(a_1, 2)
     R[0][0] = norma1
     nops += 2*m - 1
 
     if norma1 > tol:
-        insertarColumna(Q, normalizarVector(a_1, 2), 0)
+        Q[:, 0] = normalizarVector(a_1, 2)
     else:
-        insertarColumna(Q, a_1, 0)
+        Q[:, 0] = a_1
 
     for j in tqdm(range(1, n)):
-        qMoño_j = conseguirColumna(A, j)
+        qMoño_j = A[:, j]
 
         for k in range(0, j):
-            q_k = conseguirColumna(Q, k)
+            q_k = Q[:, k]
             R[k][j] = productoInterno(q_k, qMoño_j)
             nops += 2*m- 1
             qMoño_j = restaVectorial(qMoño_j, productoEscalar(q_k, R[k][j]))
@@ -288,10 +288,11 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
         nops += 2*m - 1
 
         if R[j][j] > tol:
-            insertarColumna(Q, productoEscalar(qMoño_j, 1/R[j][j]), j)
+
+            Q[:, j] = productoEscalar(qMoño_j, 1/R[j][j])
             nops += 1
         else:
-            insertarColumna(Q, qMoño_j, j)
+            Q[:, j] = qMoño_j
 
     if (retorna_nops):
         return Q, R, nops
@@ -396,7 +397,7 @@ def nucleo(A,tol=1e-15):
     #consigo la columna respectiva del autovalor 0 
     for i in range(len(DA)):
             if DA[i][i] <= tol:
-                nucleo.append(conseguirColumna(SA, i))
+                nucleo.append(SA[:, i])
                 
     return traspuesta(np.array(nucleo))
 
