@@ -63,7 +63,7 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
 def svdFCN(X, Y, tol = 1e-15):
     n, p = X.shape
     
-    U, S, Vh = np.linalg.svd(X, full_matrices=False)
+    U, S, Vh = svd_reducida(X, tol=tol)
 
     S_inv_diag = np.zeros((len(S), len(S)))
     for i in range(len(S)):
