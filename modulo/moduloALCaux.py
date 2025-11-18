@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 
 def calcularAx(A, x):
-    res = np.zeros(cantFilas(A))  
+    res = np.zeros(A.shape[0])  
     for i, row in enumerate(A):
         for j, value in enumerate(row):
             res[i] += value * x[j][0] 
@@ -44,7 +44,7 @@ def productoMatricial(A, B): # A es nxp, B es pxm
     return res
 
 def productoExterno(u, v):
-    n = cantFilas(u)
+    n = u.shape[0]
     res = np.zeros((n, n))
     for i, ui in enumerate(u):
         if ui[0] != 0:
@@ -82,23 +82,21 @@ def normalizarVector(vector, p):
     return np.array(vector) / normaVector
 
 def traspuesta(A):
-    
     if (len(A) == 0):
         return A
 
     elif (isinstance(A[0], Iterable)):
-        m, n = np.array(A).shape  
-        res = np.zeros((n,m))
+        m, n = np.array(A).shape
+        res = np.zeros((n, m))
         for i, row in enumerate(A):
             for j, value in enumerate(row):
                 res[j][i] = A[i][j]
 
 
     else:
-        n = len(A)
-        res = np.zeros((1, n))  
+        res = np.zeros((len(A),1))
         for i, value in enumerate(A):
-            res[0][i] = value 
+            res[i][0] = value 
     
     return res
 
@@ -124,24 +122,11 @@ def triangL(A):
     
     return L
 
-def cantFilas(A):
-    if isinstance(A[0], Iterable):
-        return len(A)
-
-    else:
-        return 1
-
-def cantColumnas(A):
-    if isinstance(A[0], Iterable):
-        return len(A[0])
-    
-    else:
-        return len(A)
 
 
 def conseguirColumnaSufijo(A, j, k):
     columna = []
-    for l in range(k, cantColumnas(A)):
+    for l in range(k, A.shape[1]):
         columna.append(A[l][j])
     
     return np.array(columna)
@@ -166,7 +151,7 @@ def restaMatricial(A, B):
 
 def extenderConIdentidad(A, p): #solo para matrices cuadradas
     res = nIdentidad(p)
-    n = cantFilas(A)
+    n = A.shape[0]
     for i in range(p - n, p):
         k = i - (p - n)
         for j in range(p - n, p):
