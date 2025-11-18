@@ -153,8 +153,7 @@ def calculaLU(A):
     if m!=n:
         return None, None, 0
     
-    print("iteracion LU")
-    for k in tqdm(range(0, n-1)):
+    for k in range(0, n-1):
         if A[k][k] == 0:
             return None, None, 0
         
@@ -196,13 +195,11 @@ def inversa(A):
     return productoMatricial(Uinv, Linv)
 
 def calculaLDV(A):
-    print("primera LU")
     L, U, nops1 = calculaLU(A)
 
     if(U is None):
         return None, None, None, 0
 
-    print("segunda LU")
     Vt, D, nops2 = calculaLU(traspuesta(U))
 
 
@@ -274,7 +271,7 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
     else:
         insertarColumna(Q, a_1, 0)
 
-    for j in tqdm(range(1, n)):
+    for j in range(1, n):
         qMoño_j = conseguirColumna(A, j)
 
         for k in range(0, j):
@@ -307,7 +304,7 @@ def QR_con_HH (A, tol = 1e-12):
     
     Q = nIdentidad(m)
 
-    for k in tqdm(range(n)):
+    for k in range(n):
         x = conseguirColumnaSufijo(A, k, k)
         a = (-1)*signo(x[0])*alc.norma(x, 2)
         u = x - productoEscalar(a, filaCanonica(n - k, 0))
@@ -435,8 +432,7 @@ def svd_reducida(A,k="max",tol=1e-15):
 
     B = productoMatricial(A, VHat)
     UHatTraspuesta = traspuesta(B)
-    print("iteracion SigmaHatVector")
-    for i in tqdm(range(len(SigmaHatVector))):
+    for i in range(len(SigmaHatVector)):
 
         if SigmaHatVector[i] > tol:
             UHatTraspuesta[i] = UHatTraspuesta[i] / SigmaHatVector[i]

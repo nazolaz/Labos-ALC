@@ -32,19 +32,15 @@ def esCuadrada(A):
 
 def productoMatricial(A, B): # A es nxp, B es pxm
     n = cantFilas(A)
-    p = cantFilas(B)
-    m = cantColumnas(B)
-    
+    m = cantColumnas(B)     
     res = np.zeros((n, m))
     
-    print("producto matricial")
-    for i in tqdm(range(n)):
-        for k in range(p):
-            if A[i][k] != 0:
-                value = A[i][k]
-                for j in range(m):
-                    res[i][j] += value * B[k][j]
+    for i in range(n):
+        for j in range(m):
+            res[i][j] = np.sum(A[i, :] * B[:, j])
+            
     return res
+
 
 def productoExterno(u, v):
     n = cantFilas(u)
@@ -212,8 +208,7 @@ def cholesky(A):
     # REQUIERE A SDP
     L, D, _, _ = alc.calculaLDV(A)
 
-    print("arranca con la raiz diagonal")
-    for i in tqdm(range(len(D))):
+    for i in range(len(D)):
         D[i][i] = np.sqrt(D[i][i])
 
     Lmoño = productoMatricial(L, D)

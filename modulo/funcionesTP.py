@@ -46,7 +46,7 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
         
         V = np.zeros((p,n))
         Xtraspuesta = traspuesta(X)
-        for i in tqdm(range(n)):
+        for i in range(n):
             y_i = sustitucionHaciaDelante(L, Xtraspuesta[i]) # iesima columna de X
             V[i] = sustitucionHaciaAtras(traspuesta(L), y_i)
 
