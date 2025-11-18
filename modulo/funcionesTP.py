@@ -62,46 +62,21 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
 
 def svdFCN(X, Y, tol = 1e-15):
     n, p = X.shape
-    U, S, V = np.linalg.svd(X)
- 
-    sigma_plus = np.zeros((p,n))
+    
+    U, S, Vh = np.linalg.svd(X, full_matrices=False)
+
+    S_inv_diag = np.zeros((len(S), len(S)))
     for i in range(len(S)):
-        sigma_plus[i,i] = 1 / S[i]
+        S_inv_diag[i,i] = 1.0 / S[i]
 
 
-
-
-
-
-
-# TEST BORRAR
-from pathlib import Path
-import numpy as np
-from funcionesTP import *
-
-def cargarDataset(carpeta: Path):
-    pathCats = carpeta.joinpath('cats/efficientnet_b3_embeddings.npy')
-    pathDogs = carpeta.joinpath('dogs/efficientnet_b3_embeddings.npy')
-
-    embeddingsCats = np.load(pathCats)
-    embeddingsDogs = np.load(pathDogs)
-
-    embeddings = np.concatenate((embeddingsCats, embeddingsDogs), axis=1)
-    _, m = embeddings.shape
-
-    Y = np.zeros((2,m))
-    for i in range(0, int(m/2)):
-        Y[0,i] = 1
-
-    for i in range(int(m/2), m):
-        Y[1,i] = 1
-
-    return embeddings, Y
-
-Xt, Yt = cargarDataset(Path('../TP/template-alumnos/dataset/cats_and_dogs/train'))
-
-svdFCN(Xt, Yt)
-
+    V1 = traspuesta(Vh)  # Dimensiones: (p x n) o (2000 x 1536)
+    
+    X_plus = productoMatricial(V1, productoMatricial(S_inv_diag, traspuesta(U)))
+    
+    W = productoMatricial(Y, X_plus)
+    
+    return W
 
 def qrFCN(Q, R, Y):
     #despejamos V haciendo R* V.T = Q.T
