@@ -106,15 +106,6 @@ Xt, Yt = cargarDataset(Path('../TP/template-alumnos/dataset/cats_and_dogs/train'
 svdFCN(Xt, Yt)
 
 
-
-
-
-
-
-
-
-
-
 def qrFCN(Q, R, Y):
     #despejamos V haciendo R* V.T = Q.T
     n = R.shape[0] #1536

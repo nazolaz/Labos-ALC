@@ -255,15 +255,21 @@ def f_A(A, v):
     return 0
 
 def QR_con_GS(A,tol=1e-12,retorna_nops=False):
-    n = cantFilas(A)
-    Q = np.zeros((n,n))
+    m = cantFilas(A)
+    n = cantColumnas(A)
+    Q = np.zeros((m,n))
     R = np.zeros((n,n))
     nops = 0
 
     a_1 = conseguirColumna(A, 0)
-    insertarColumna(Q, normalizarVector(a_1, 2), 0)
-    R[0][0] = norma(a_1, 2)
-    nops += 2*n + 1
+    norma1 = norma(a_1, 2)
+    R[0][0] = norma1
+    nops += 2*m - 1
+
+    if norma1 > tol:
+        insertarColumna(Q, normalizarVector(a_1, 2), 0)
+    else:
+        insertarColumna(Q, a_1, 0)
 
     for j in tqdm(range(1, n)):
         qMoño_j = conseguirColumna(A, j)
@@ -271,14 +277,18 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
         for k in range(0, j):
             q_k = conseguirColumna(Q, k)
             R[k][j] = productoInterno(q_k, qMoño_j)
-            nops += 2*n - 1
+            nops += 2*m- 1
             qMoño_j = restaVectorial(qMoño_j, productoEscalar(q_k, R[k][j]))
-            nops += 2*n
+            nops += 2*m
         
         R[j][j] = norma(qMoño_j, 2)
-        nops += 2*n - 1
-        insertarColumna(Q, productoEscalar(qMoño_j, 1/R[j][j]), j)
-        nops += 1
+        nops += 2*m - 1
+
+        if R[j][j] > tol:
+            insertarColumna(Q, productoEscalar(qMoño_j, 1/R[j][j]), j)
+            nops += 1
+        else:
+            insertarColumna(Q, qMoño_j, j)
 
     if (retorna_nops):
         return Q, R, nops

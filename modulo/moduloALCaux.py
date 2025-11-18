@@ -147,8 +147,7 @@ def conseguirColumna(A, j):
     return A[:, j] 
 
 def insertarColumna(A, b, j):
-    for k in range(cantFilas(A)):
-        A[k][j] = b[k]
+    A[:, j] = b 
     return A
 
 def conseguirColumnaSufijo(A, j, k):
