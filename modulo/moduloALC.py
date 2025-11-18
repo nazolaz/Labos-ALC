@@ -72,7 +72,7 @@ def normaExacta(A, p = [1, 'inf']):
         return None
 
 def normaMatMC(A, q, p, Np):
-    n = cantFilas(A)
+    n = A.shape[0]
     vectors = []
 
     ## generamos Np vectores random
@@ -118,7 +118,8 @@ def condExacta(A, p):
 
 def sustitucionHaciaAtras(A, b):
     valoresX = np.zeros(len(b))
-    for i in range(cantFilas(A)-1, -1, -1):
+
+    for i in range( A.shape[0] -1, -1, -1):
         cocienteActual = A[i][i]
         sumatoria = 0
         for k in range(i + 1, len(b)):
@@ -152,9 +153,8 @@ def calculaLU(A):
     
     if m!=n:
         return None, None, 0
-    
-    print("iteracion LU")
-    for k in tqdm(range(0, n-1)):
+
+    for k in range(0, n-1):
         if A[k][k] == 0:
             return None, None, 0
         
@@ -170,7 +170,7 @@ def calculaLU(A):
     return triangL(Ac), triangSup(Ac), cant_op
 
 def inversa(A):
-    n = cantFilas(A)
+    n = A.shape[0]
 
     L,U,_ = calculaLU(A)
 
@@ -196,13 +196,11 @@ def inversa(A):
     return productoMatricial(Uinv, Linv)
 
 def calculaLDV(A):
-    print("primera LU")
     L, U, nops1 = calculaLU(A)
 
     if(U is None):
         return None, None, None, 0
 
-    print("segunda LU")
     Vt, D, nops2 = calculaLU(traspuesta(U))
 
 
@@ -258,8 +256,7 @@ def f_A(A, v):
     return 0
 
 def QR_con_GS(A,tol=1e-12,retorna_nops=False):
-    m = cantFilas(A)
-    n = cantColumnas(A)
+    m , n = A.shape
     Q = np.zeros((m,n))
     R = np.zeros((n,n))
     nops = 0
@@ -274,7 +271,7 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
     else:
         Q[:, 0] = a_1
 
-    for j in tqdm(range(1, n)):
+    for j in range(1, n):
         qMoño_j = A[:, j]
 
         for k in range(0, j):
@@ -300,8 +297,7 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
     return Q, R
 
 def QR_con_HH (A, tol = 1e-12):
-    m = cantFilas(A)
-    n = cantColumnas(A)
+    m, n = A.shape
 
     if m < n:
         return None, None
@@ -316,6 +312,7 @@ def QR_con_HH (A, tol = 1e-12):
         if alc.norma(u, 2) > tol:
             u_n = normalizarVector(u, 2)
             uut = productoExterno(traspuesta(u_n), u_n)
+            
             dosuut = productoEscalar(2, uut)
             H_k = nIdentidad(n - k) - dosuut
             H_k_ext = extenderConIdentidad(H_k, m)
@@ -436,8 +433,8 @@ def svd_reducida(A,k="max",tol=1e-15):
 
     B = productoMatricial(A, VHat)
     UHatTraspuesta = traspuesta(B)
-    print("iteracion SigmaHatVector")
-    for i in tqdm(range(len(SigmaHatVector))):
+
+    for i in range(len(SigmaHatVector)):
 
         if SigmaHatVector[i] > tol:
             UHatTraspuesta[i] = UHatTraspuesta[i] / SigmaHatVector[i]
