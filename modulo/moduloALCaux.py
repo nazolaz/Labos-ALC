@@ -29,14 +29,13 @@ def esSimetrica(A, tol = 1e-8):
 
 
 def productoMatricial(A, B): # A es nxp, B es pxm
-    n = cantFilas(A)
-    p = cantFilas(B)
-    m = cantColumnas(B)
+    n = A.shape[0]
+    p, m = B.shape
     
     res = np.zeros((n, m))
     
     # print("producto matricial")
-    for i in (range(n)):
+    for i in range(n):
         for k in range(p):
             if A[i][k] != 0:
                 value = A[i][k]
@@ -83,20 +82,23 @@ def normalizarVector(vector, p):
     return np.array(vector) / normaVector
 
 def traspuesta(A):
+    
     if (len(A) == 0):
         return A
 
     elif (isinstance(A[0], Iterable)):
-        res = np.zeros((cantColumnas(A), cantFilas(A)))
+        m, n = np.array(A).shape  
+        res = np.zeros((n,m))
         for i, row in enumerate(A):
             for j, value in enumerate(row):
                 res[j][i] = A[i][j]
 
 
     else:
-        res = np.zeros((len(A),1))
+        n = len(A)
+        res = np.zeros((1, n))  
         for i, value in enumerate(A):
-            res[i][0] = value 
+            res[0][i] = value 
     
     return res
 
