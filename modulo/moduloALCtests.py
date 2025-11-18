@@ -471,7 +471,38 @@ class TestModuloALC(unittest.TestCase):
         A_rala, _ = crea_rala(listado,5,5)
         v = np.random.random(5)
         assert np.allclose(multiplica_rala_vector(A_rala,v), A @ v)
+
+    def genera_matriz_para_test(self, m,n=2,tam_nucleo=0):
+        if tam_nucleo == 0:
+            A = np.random.random((m,n))
+        else:
+            A = np.random.random((m,tam_nucleo))
+            A = np.hstack([A,A])
+        return(A)
+    
+    def _test_svd_reducida_mn(self, A, tol=1e-15):
+
+        m,n = A.shape
+        hU,hS,hV = svd_reducida(A,tol=tol)
+        nU,nS,nVT = np.linalg.svd(A, full_matrices=False)
         
+        r = len(hS)+1
+        assert np.all(np.abs(np.abs(np.diag(hU.T @ nU))-1)<10**r*tol), 'Revisar calculo de hat U en ' + str((m,n))
+        assert np.all(np.abs(np.abs(np.diag(nVT @ hV))-1)<10**r*tol), 'Revisar calculo de hat V en ' + str((m,n))
+        assert len(hS) == len(nS[np.abs(nS)>tol]), 'Hay cantidades distintas de valores singulares en ' + str((m,n))
+        assert np.all(np.abs(hS-nS[np.abs(nS)>tol])<10**r*tol), 'Hay diferencias en los valores singulares en ' + str((m,n))
+
+    def test_svd_reducida_mn(self):
+        for m in [2,5,10,20]:
+            for n in [2,5, 10, 20]:
+                for _ in range(10):
+                    A = self.genera_matriz_para_test(m,n)
+                    self._test_svd_reducida_mn(A)        
+
+
+
+
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
