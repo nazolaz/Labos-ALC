@@ -17,7 +17,7 @@ def fully_connected_lineal(X, Y, tol=1e-15, method = "QR"):
 
 def pinvEcuacionesNormales(X, Y, tol=1e-15):
     n, p = X.shape
-    _, Sigma, _ = np.linalg.svd(X)
+    _, Sigma, _ = svd_reducida(X, tol = tol)
     rangoX = 0
     for valorSingular in Sigma:
         if valorSingular > tol:
@@ -36,16 +36,13 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
             u_i = sustitucionHaciaAtras(traspuesta(L), y_i)
             Utraspuesta[i] = u_i
         U = traspuesta(Utraspuesta)
-        W = productoMatricial(U, Y)
+        W = productoMatricial(Y, U)
 
 
     elif rangoX ==n and rangoX < p:
-        # XXt = productoMatricial(X, traspuesta(X))
-        XXt = X @ X.T
+        XXt = productoMatricial(X, traspuesta(X))
 
         L = cholesky(XXt)
-        
-        
         
         V = np.zeros((p,n))
         Xtraspuesta = traspuesta(X)
@@ -53,12 +50,12 @@ def pinvEcuacionesNormales(X, Y, tol=1e-15):
             y_i = sustitucionHaciaDelante(L, Xtraspuesta[i]) # iesima columna de X
             V[i] = sustitucionHaciaAtras(traspuesta(L), y_i)
 
-        W = productoMatricial(V, Y)
+        W = productoMatricial(Y, V)
 
 
     elif rangoX == p and p == n:
         Xinv = inversa(X)
-        W = productoMatricial(Xinv, Y)
+        W = productoMatricial(Y, Xinv)
 
     return W
 

@@ -153,7 +153,8 @@ def calculaLU(A):
     if m!=n:
         return None, None, 0
     
-    for k in range(0, n-1):
+    print("iteracion LU")
+    for k in tqdm(range(0, n-1)):
         if A[k][k] == 0:
             return None, None, 0
         
@@ -195,11 +196,13 @@ def inversa(A):
     return productoMatricial(Uinv, Linv)
 
 def calculaLDV(A):
+    print("primera LU")
     L, U, nops1 = calculaLU(A)
 
     if(U is None):
         return None, None, None, 0
 
+    print("segunda LU")
     Vt, D, nops2 = calculaLU(traspuesta(U))
 
 
@@ -420,3 +423,32 @@ def multiplica_rala_vector(A,v):
         w[parIj[0]] += A[parIj] * v[parIj[1]]
 
     return w
+
+def svd_reducida(A,k="max",tol=1e-15):
+    m, n = A.shape
+    k = min(m,n) if k == "max" else k
+
+    AtA = productoMatricial(traspuesta(A), A)
+    VHat, SigmaHat = diagRH(AtA, tol=1e-16, K=10000)
+
+    SigmaHatVector = vectorValoresSingulares(SigmaHat, k)
+
+    B = productoMatricial(A, VHat)
+    UHatTraspuesta = traspuesta(B)
+    print("iteracion SigmaHatVector")
+    for i in tqdm(range(len(SigmaHatVector))):
+
+        if SigmaHatVector[i] > tol:
+            UHatTraspuesta[i] = UHatTraspuesta[i] / SigmaHatVector[i]
+        else:
+            UHatTraspuesta[i] = np.zeros(m)
+
+    UHat = traspuesta(UHatTraspuesta)
+
+    return UHat[:m, :k], SigmaHatVector, VHat[:n, :k]
+
+def vectorValoresSingulares(SigmaHat, k):
+    SigmaHatVector = list()
+    for i in range(k):
+            SigmaHatVector.append(np.sqrt(np.abs(SigmaHat[i][i])))
+    return SigmaHatVector

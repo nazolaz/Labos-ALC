@@ -37,7 +37,8 @@ def productoMatricial(A, B): # A es nxp, B es pxm
     
     res = np.zeros((n, m))
     
-    for i in range(n):
+    print("producto matricial")
+    for i in tqdm(range(n)):
         for k in range(p):
             if A[i][k] != 0:
                 value = A[i][k]
@@ -208,11 +209,11 @@ def submatriz(A, l, k):
 
 def cholesky(A):
 
-    return np.linalg.cholesky(A)
     # REQUIERE A SDP
     L, D, _, _ = alc.calculaLDV(A)
 
-    for i in range(len(D)):
+    print("arranca con la raiz diagonal")
+    for i in tqdm(range(len(D))):
         D[i][i] = np.sqrt(D[i][i])
 
     Lmoño = productoMatricial(L, D)
