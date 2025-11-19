@@ -34,8 +34,8 @@ def productoMatricial(A, B): # A es nxp, B es pxm
     
     res = np.zeros((n, m))
     
-    # print("producto matricial")
-    for i in range(n):
+    print("producto matricial")
+    for i in tqdm(range(n)):
         for k in range(p):
             if A[i][k] != 0:
                 value = A[i][k]
@@ -184,6 +184,9 @@ def cholesky(A):
 
     # REQUIERE A SDP
     L, D, _, _ = alc.calculaLDV(A)
+
+    if D is None:
+        return None, None
 
     print("arranca con la raiz diagonal")
     for i in tqdm(range(len(D))):

@@ -64,6 +64,7 @@ def svdFCN(X, Y, tol = 1e-15):
     n, p = X.shape
     
     U, S, Vh = svd_reducida(X, tol=tol)
+    # U, S, Vh = np.linalg.svd(X)
 
     S_inv_diag = np.zeros((len(S), len(S)))
     for i in range(len(S)):

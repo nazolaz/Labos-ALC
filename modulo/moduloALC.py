@@ -362,7 +362,7 @@ def transiciones_al_azar_continuas(n):
         randvec = np.random.uniform(0, 1, n)
         t.append(randvec)
     tnormalizado = normaliza(t, 1)
-    return traspuesta(np.array(tnormalizado))
+    return traspuesta(tnormalizado)
 
 
 def transiciones_al_azar_uniformes(n,thres):
