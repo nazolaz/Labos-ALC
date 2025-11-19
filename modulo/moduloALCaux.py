@@ -84,7 +84,7 @@ def traspuesta(A):
         return A
 
     elif (isinstance(A[0], Iterable)):
-        m, n = np.array(A).shape
+        m, n = (np.array(A)).shape
         res = np.zeros((n, m))
         for i, row in enumerate(A):
             for j, value in enumerate(row):
