@@ -5,11 +5,12 @@ from tqdm import tqdm
 
 
 def calcularAx(A, x):
+    x = np.array(x).flatten()
     res = np.zeros(A.shape[0])  
     for i, row in enumerate(A):
         for j, value in enumerate(row):
-            res[i] += value * x[j][0] 
-    return res
+            res[i] += value * x[j]
+    return np.array(res).reshape((-1,1))
 
 def normaInf(A):
     sumatorias = []
@@ -34,7 +35,7 @@ def productoMatricial(A, B): # A es nxp, B es pxm
     
     res = np.zeros((n, m))
     
-    for i in (range(n)):
+    for i in tqdm(range(n), disable=True):
         for j in range(m):
             res[i][j] = np.sum(A[i] * B[:, j])
             

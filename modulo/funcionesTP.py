@@ -3,26 +3,12 @@ from moduloALCaux import *
 import numpy as np
 from tqdm import tqdm
 
-def fully_connected_lineal(X, Y, tol=1e-15, method = "QR"):
-    match method:
-        case "Cholesky":
-            return pinvEcuacionesNormales(X, Y, tol)
-        case "SVD":
-            return svdFCN(X, Y, tol)
-        case "QR-HH":
-            return qrFCN(X, Y, tol)
-        case "QR-GS":
-            return ""
-    
-
 def pinvEcuacionesNormales(X, Y):
     n, p = X.shape
     rangoX = min(n, p)
 
     if rangoX == p and rangoX < n:
         XtX = productoMatricial(traspuesta(X), X)
-        
-
         L = cholesky(XtX)
         Utraspuesta = np.zeros((n,p))
         
@@ -37,12 +23,11 @@ def pinvEcuacionesNormales(X, Y):
 
     elif rangoX == n and rangoX < p:
         XXt = productoMatricial(X, traspuesta(X))
-
         L = cholesky(XXt)
-        
         V = np.zeros((p,n))
         Xtraspuesta = traspuesta(X)
-        for i in range(n):
+
+        for i in tqdm(range(n), desc='eq normales'):
             y_i = sustitucionHaciaDelante(L, Xtraspuesta[i]) # iesima columna de X
             V[i] = sustitucionHaciaAtras(traspuesta(L), y_i)
 
@@ -60,14 +45,13 @@ def svdFCN(X, Y, tol = 1e-15):
     n, p = X.shape
     
     U, S, Vh = svd_reducida(X, tol=tol)
-    # U, S, Vh = np.linalg.svd(X)
 
-    S_inv_diag = np.zeros((len(S), len(S)))
+    S_inv_diag = np.zeros((n, n))
     for i in range(len(S)):
         S_inv_diag[i,i] = 1.0 / S[i]
 
 
-    V1 = traspuesta(Vh)  # Dimensiones: (p x n) o (2000 x 1536)
+    V1 = traspuesta(Vh)[:p,:n]
     
     X_plus = productoMatricial(V1, productoMatricial(S_inv_diag, traspuesta(U)))
     
@@ -76,14 +60,16 @@ def svdFCN(X, Y, tol = 1e-15):
     return W
 
 def qrFCN(Q, R, Y):
-    #despejamos V haciendo R* V.T = Q.T
-    n = R.shape[0] #1536
-    p = Q.shape[0] #2000
-    
-    V = np.zeros((p, n))
 
-    for i in tqdm(range(p)):
-        b = Q[i] # esto es igual a conseguirColumna(traspuesta(Q))
+    #despejamos V haciendo R * V.T = Q.T
+    m_r, n_r = R.shape # shape R (2000, 1536)
+    m_p, n_p = Q.shape # shape Q (2000, 2000)
+
+    V = np.zeros((m_p, n_r)) # shape V.T (1536, 2000) -> shape V (2000, 1536) 
+ 
+    
+    for i in tqdm(range(m_p)):
+        b = Q[i] # esto es equivalente a conseguirColumna(traspuesta(Q))
         V[i] = sustitucionHaciaAtras(R, b)
 
     return productoMatricial(Y,  V)

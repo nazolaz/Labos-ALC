@@ -248,7 +248,7 @@ def metpot2k(A, tol=1e-15, K=1000.0):
 
 def f_A(A, v):
 
-    wprima = A @ v
+    wprima = calcularAx(A, v)
 
     if norma(wprima, 2) > 0:
         return normalizarVector(wprima, 2) 
@@ -357,7 +357,6 @@ def calculaQR(A, metodo = 'RH', tol = 1e-12, nops = False):
 def diagRH(A, tol = 1e-15, K = 1000):
     n = len(A)
     v1, l1, _ = metpot2k(A, tol, K)
-
     resta = normalizarVector(restaVectorial(colCanonico(n,0), v1),2)
     producto = productoExterno(resta, resta)    
     Hv1 = restaMatricial(nIdentidad(n), productoEscalar(producto, 2))
