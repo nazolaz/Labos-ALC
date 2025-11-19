@@ -34,14 +34,12 @@ def productoMatricial(A, B): # A es nxp, B es pxm
     
     res = np.zeros((n, m))
     
-    print("producto matricial")
     for i in tqdm(range(n)):
-        for k in range(p):
-            if A[i][k] != 0:
-                value = A[i][k]
-                for j in range(m):
-                    res[i][j] += value * B[k][j]
+        for j in range(m):
+            res[i][j] = np.sum(A[i] * B[:, j])
+            
     return res
+
 
 def productoExterno(u, v):
     n = u.shape[0]
@@ -125,11 +123,7 @@ def triangL(A):
 
 
 def conseguirColumnaSufijo(A, j, k):
-    columna = []
-    for l in range(k, A.shape[1]):
-        columna.append(A[l][j])
-    
-    return np.array(columna)
+    return A[k:cantColumnas(A), j]
 
 def productoInterno(u, v):
     subtotal = 0
@@ -185,11 +179,7 @@ def cholesky(A):
     # REQUIERE A SDP
     L, D, _, _ = alc.calculaLDV(A)
 
-    if D is None:
-        return None, None
-
-    print("arranca con la raiz diagonal")
-    for i in tqdm(range(len(D))):
+    for i in range(len(D)):
         D[i][i] = np.sqrt(D[i][i])
 
     Lmoño = productoMatricial(L, D)

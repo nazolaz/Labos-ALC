@@ -196,11 +196,13 @@ def inversa(A):
     return productoMatricial(Uinv, Linv)
 
 def calculaLDV(A):
+    print("primer LU de LDV")
     L, U, nops1 = calculaLU(A)
 
     if(U is None):
         return None, None, None, 0
 
+    print("segundo LU de LDV")
     Vt, D, nops2 = calculaLU(traspuesta(U))
 
 
@@ -303,6 +305,7 @@ def QR_con_HH (A, tol = 1e-12):
         return None, None
     
     Q = nIdentidad(m)
+    #    Q = Q[:, A.shape[1]]
 
     for k in tqdm(range(n)):
         x = conseguirColumnaSufijo(A, k, k)
@@ -433,7 +436,6 @@ def svd_reducida(A,k="max",tol=1e-15):
 
     B = productoMatricial(A, VHat)
     UHatTraspuesta = traspuesta(B)
-
     for i in range(len(SigmaHatVector)):
 
         if SigmaHatVector[i] > tol:
