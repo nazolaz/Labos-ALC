@@ -44,14 +44,13 @@ def pinvEcuacionesNormales(X, Y):
 def svdFCN(X, Y, tol = 1e-15):
     n, p = X.shape
     
-    U, S, Vh = svd_reducida(X, tol=tol)
+
+    # SVD REDUCIDA ME DA V1 DIRECTAMENTE
+    U, S, V1 = svd_reducida(X, tol=tol)
 
     S_inv_diag = np.zeros((n, n))
     for i in range(len(S)):
         S_inv_diag[i,i] = 1.0 / S[i]
-
-
-    V1 = traspuesta(Vh)[:p,:n]
     
     X_plus = productoMatricial(V1, productoMatricial(S_inv_diag, traspuesta(U)))
     
