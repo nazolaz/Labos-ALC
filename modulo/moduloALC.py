@@ -115,18 +115,19 @@ def condExacta(A, p):
     return normaA * normaAInv
 
 def sustitucionHaciaAtras(A, b):
-    valoresX = np.zeros(len(b))
+    m, n = A.shape
+    valoresX = np.zeros(n)
 
-    for i in range( A.shape[0] -1, -1, -1):
+    for i in range( min(A.shape) -1, -1, -1):
         cocienteActual = A[i][i]
         sumatoria = 0
-        for k in range(i + 1, len(b)):
+        for k in range(i + 1, n):
             sumatoria += A[i][k] * valoresX[k]
 
         if cocienteActual == 0:
             valoresX[i] = np.nan  
         else:
-            valoresX[i] = (b[i] - sumatoria)/cocienteActual
+            valoresX[i] = (b[i] - sumatoria) / cocienteActual
     return valoresX
 
 def sustitucionHaciaDelante(A, b):
@@ -194,13 +195,13 @@ def inversa(A):
     return productoMatricial(Uinv, Linv)
 
 def calculaLDV(A):
-    print("primer LU de LDV")
+    # print("primer LU de LDV")
     L, U, nops1 = calculaLU(A)
 
     if(U is None):
         return None, None, None, 0
 
-    print("segundo LU de LDV")
+    # print("segundo LU de LDV")
     Vt, D, nops2 = calculaLU(traspuesta(U))
 
 
@@ -298,33 +299,47 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
 
 def QR_con_HH (A, tol = 1e-12):
 
-
+    # OPTIMIZACIÓN
     # H = I - 2 * vv^t
     # H A = (I - 2 * vv^t) A
     # H A = A - 2 * v (v^tA)
+
     m, n = A.shape
+    
+    R = A.copy()
+    Q = nIdentidad(m)
 
     if m < n:
         return None, None
-    
-    Q = nIdentidad(m)
 
-    for k in tqdm(range(n)):
-        x = conseguirColumnaSufijo(A, k, k)
-        a = (-1)*signo(x[0])*norma(x, 2)
-        u = x - productoEscalar(a, filaCanonica(n - k, 0))
+    for k in range(min(m,n)):
         
-        if norma(u, 2) > tol:
-            u_n = normalizarVector(u, 2)
-            uut = productoExterno(traspuesta(u_n), u_n)
+        # x es el vector columna actual desde la diagonal hacia abajo
+        x = R[k:, k]
+        
+        norm_x = norma(x, 2)
+        if norm_x < tol:
+            continue
             
-            dosuut = productoEscalar(2, uut)
-            H_k = nIdentidad(n - k) - dosuut
-            H_k_ext = extenderConIdentidad(H_k, m)
-            A = productoMatricial(H_k_ext, A)
-            Q = productoMatricial(Q, traspuesta(H_k_ext))
+        signo_x = signo(x[0])
+        # u = x + signo_x * ||x|| * e1
+        u = x.copy()
+        u[0] += signo_x * norm_x
+        
+        # v = u / ||u|| (Tu variable u_n)
+        v = u / norma(u, 2)
+        v_fila = v.reshape(1, -1)
+        # v @ R[k:, k:] nos da un vector fila
 
-    return Q, A
+
+        valor_intermedio = productoMatricial(v_fila, R[k:, k:]).flatten()
+        R[k:, k:] -= 2 * np.outer(v, valor_intermedio)
+        
+        v_columna = v.reshape(-1, 1)
+        valor_intermedio_Q = productoMatricial(Q[:, k:], v_columna).flatten()
+        Q[:, k:] -= 2 * np.outer(valor_intermedio_Q, v)
+
+    return Q, R
 
 def calculaQR(A, metodo = 'RH', tol = 1e-12, nops = False):
     if metodo == 'RH':
