@@ -34,7 +34,7 @@ def productoMatricial(A, B): # A es nxp, B es pxm
     
     res = np.zeros((n, m))
     
-    for i in tqdm(range(n)):
+    for i in (range(n)):
         for j in range(m):
             res[i][j] = np.sum(A[i] * B[:, j])
             
@@ -123,7 +123,7 @@ def triangL(A):
 
 
 def conseguirColumnaSufijo(A, j, k):
-    return A[k:cantColumnas(A), j]
+    return A[k:A.shape[1], j]
 
 def productoInterno(u, v):
     subtotal = 0

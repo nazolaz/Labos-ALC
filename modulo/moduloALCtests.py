@@ -501,6 +501,24 @@ class TestModuloALC(unittest.TestCase):
                     self._test_svd_reducida_mn(A)        
 
 
+    def test_svd_matrices_con_nucleo(self):
+
+        m = 12
+        for tam_nucleo in [2,4,6]:
+            for i in range(10):
+                print(f'iteración {i} con tamaño de nucleo={tam_nucleo} y m={m}')
+                A = self.genera_matriz_para_test(m,tam_nucleo=tam_nucleo)
+                self._test_svd_reducida_mn(A)
+
+    def test_svd_tamaños_de_las_reducidas(self):
+        A = np.random.random((8,6))
+        for k in [1,3,5]:
+            hU,hS,hV = svd_reducida(A,k=k) # type: ignore
+            assert hU.shape[0] == A.shape[0], 'Dimensiones de hU incorrectas (caso a)'
+            assert hV.shape[0] == A.shape[1], 'Dimensiones de hV incorrectas(caso a)'
+            assert hU.shape[1] == k, 'Dimensiones de hU incorrectas (caso a)'
+            assert hV.shape[1] == k, 'Dimensiones de hV incorrectas(caso a)'
+            assert len(hS) == k, 'Tamaño de hS incorrecto'
 
 
 

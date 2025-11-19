@@ -47,9 +47,7 @@ def norma(Xs, p):
     if p == 'inf':
         return max(map(abs ,Xs))
     
-    res = 0 
-    for xi in Xs:
-        res += xi**p
+    res = np.sum(Xs ** p)
     return res**(1/p)
 
 def normaliza(Xs, p):
@@ -305,14 +303,13 @@ def QR_con_HH (A, tol = 1e-12):
         return None, None
     
     Q = nIdentidad(m)
-    #    Q = Q[:, A.shape[1]]
 
     for k in tqdm(range(n)):
         x = conseguirColumnaSufijo(A, k, k)
-        a = (-1)*signo(x[0])*alc.norma(x, 2)
+        a = (-1)*signo(x[0])*norma(x, 2)
         u = x - productoEscalar(a, filaCanonica(n - k, 0))
         
-        if alc.norma(u, 2) > tol:
+        if norma(u, 2) > tol:
             u_n = normalizarVector(u, 2)
             uut = productoExterno(traspuesta(u_n), u_n)
             
@@ -426,26 +423,43 @@ def multiplica_rala_vector(A,v):
     return w
 
 def svd_reducida(A,k="max",tol=1e-15):
+    """
+    A la matriz de interes (de m x n)
+    k el numero de valores singulares (y vectores) a retener.
+    tol la tolerancia para considerar un valor singular igual a cero
+    Retorna hatU (matriz de m x k), hatSig (vector de k valores singulares) y hatV (matriz de n x k)
+    """
+
     m, n = A.shape
-    k = min(m,n) if k == "max" else k
 
     AtA = productoMatricial(traspuesta(A), A)
-    VHat, SigmaHat = diagRH(AtA, tol=1e-16, K=10000)
+    VHat, SigmaHat = diagRH(AtA, tol=tol, K=10000)
+    rango=min(m, n)
+    for i in range(len(SigmaHat)):
+        if SigmaHat[i,i] < tol:
+            rango = i
+            break
+
+    rango = min(m, n, rango)
+
+    k = rango if k == "max" else k
 
     SigmaHatVector = vectorValoresSingulares(SigmaHat, k)
 
     B = productoMatricial(A, VHat)
     UHatTraspuesta = traspuesta(B)
-    for i in range(len(SigmaHatVector)):
-
-        if SigmaHatVector[i] > tol:
+    for i in range(k): # type: ignore
             UHatTraspuesta[i] = UHatTraspuesta[i] / SigmaHatVector[i]
-        else:
-            UHatTraspuesta[i] = np.zeros(m)
 
     UHat = traspuesta(UHatTraspuesta)
 
-    return UHat[:m, :k], SigmaHatVector, VHat[:n, :k]
+    if m > n:
+        UHat = UHat[:m,:]
+    else:
+         VHat = VHat[:n,:]
+
+
+    return UHat[:,:k], SigmaHatVector, VHat[:,:k]
 
 def vectorValoresSingulares(SigmaHat, k):
     SigmaHatVector = list()
