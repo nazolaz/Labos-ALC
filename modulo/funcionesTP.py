@@ -22,7 +22,7 @@ def pinvEcuacionesNormales(X, Y):
     if rangoX == p and rangoX < n:
         XtX = productoMatricial(traspuesta(X), X)
         
-        
+
         L = cholesky(XtX)
         Utraspuesta = np.zeros((n,p))
         
@@ -35,7 +35,7 @@ def pinvEcuacionesNormales(X, Y):
         W = productoMatricial(Y, U)
 
 
-    elif rangoX ==n and rangoX < p:
+    elif rangoX == n and rangoX < p:
         XXt = productoMatricial(X, traspuesta(X))
 
         L = cholesky(XXt)
@@ -100,3 +100,5 @@ def esPseudoInversa(X, pX, tol= 1e-8):
     condicion4 = esSimetrica(pX_X, tol)
 
     return condicion1 & condicion2 & condicion3 & condicion4
+
+
