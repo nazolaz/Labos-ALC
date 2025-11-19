@@ -493,7 +493,6 @@ class TestModuloALC(unittest.TestCase):
         assert np.all(np.abs(hS-nS[np.abs(nS)>tol])<10**r*tol), 'Hay diferencias en los valores singulares en ' + str((m,n))
 
     def test_svd_reducida_mn(self):
-        return
         for m in [2,5,10,20]:
             for n in [2,5, 10, 20]:
                 for _ in range(10):

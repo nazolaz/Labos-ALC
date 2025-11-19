@@ -297,6 +297,11 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
     return Q, R
 
 def QR_con_HH (A, tol = 1e-12):
+
+
+    # H = I - 2 * vv^t
+    # H A = (I - 2 * vv^t) A
+    # H A = A - 2 * v (v^tA)
     m, n = A.shape
 
     if m < n:
@@ -432,34 +437,42 @@ def svd_reducida(A,k="max",tol=1e-15):
 
     m, n = A.shape
 
+    # chequeo de dimension para optimizar
+    usar_traspuesta = False
+    if m < n:
+        A = traspuesta(A)
+        usar_traspuesta = True
+
+    m, n = A.shape
+
     AtA = productoMatricial(traspuesta(A), A)
-    VHat, SigmaHat = diagRH(AtA, tol=tol, K=10000)
+    VHat_full, SigmaHat = diagRH(AtA, tol=tol, K=10000)
+
+    # calculo de rango
     rango=min(m, n)
     for i in range(len(SigmaHat)):
         if SigmaHat[i,i] < tol:
             rango = i
             break
-
     rango = min(m, n, rango)
-
     k = rango if k == "max" else k
 
+    # tomamos las primeras k columnas de Vhat y los primeros k valores singulares
+    VHat_k = VHat_full[:, :k]
     SigmaHatVector = vectorValoresSingulares(SigmaHat, k)
 
-    B = productoMatricial(A, VHat)
-    UHatTraspuesta = traspuesta(B)
-    for i in range(k): # type: ignore
-            UHatTraspuesta[i] = UHatTraspuesta[i] / SigmaHatVector[i]
-
-    UHat = traspuesta(UHatTraspuesta)
-
-    if m > n:
-        UHat = UHat[:m,:]
+    B = productoMatricial(A, VHat_k)
+    UHat_k = B
+    for j in range(k): # type: ignore
+        sigma = SigmaHatVector[j]
+        for fila in range(m):
+            UHat_k[fila][j] = UHat_k[fila][j] / sigma
+    if usar_traspuesta:
+        return VHat_k, SigmaHatVector, UHat_k
     else:
-         VHat = VHat[:n,:]
+        return UHat_k, SigmaHatVector, VHat_k
 
 
-    return UHat[:,:k], SigmaHatVector, VHat[:,:k]
 
 def vectorValoresSingulares(SigmaHat, k):
     SigmaHatVector = list()
