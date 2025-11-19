@@ -15,13 +15,9 @@ def fully_connected_lineal(X, Y, tol=1e-15, method = "QR"):
             return ""
     
 
-def pinvEcuacionesNormales(X, Y, tol=1e-15):
+def pinvEcuacionesNormales(X, Y):
     n, p = X.shape
-    _, Sigma, _ = svd_reducida(X, tol = tol)
-    rangoX = 0
-    for valorSingular in Sigma:
-        if valorSingular > tol:
-            rangoX += 1
+    rangoX = min(n, p)
 
     if rangoX == p and rangoX < n:
         XtX = productoMatricial(traspuesta(X), X)

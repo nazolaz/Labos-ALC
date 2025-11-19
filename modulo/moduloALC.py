@@ -153,7 +153,8 @@ def calculaLU(A):
     if m!=n:
         return None, None, 0
     
-    for k in range(0, n-1):
+    print("iteracion LU")
+    for k in tqdm(range(0, n-1)):
         if A[k][k] == 0:
             return None, None, 0
         
@@ -195,11 +196,13 @@ def inversa(A):
     return productoMatricial(Uinv, Linv)
 
 def calculaLDV(A):
+    print("primer LU de LDV")
     L, U, nops1 = calculaLU(A)
 
     if(U is None):
         return None, None, None, 0
 
+    print("segundo LU de LDV")
     Vt, D, nops2 = calculaLU(traspuesta(U))
 
 
@@ -303,8 +306,9 @@ def QR_con_HH (A, tol = 1e-12):
         return None, None
     
     Q = nIdentidad(m)
+    #    Q = Q[:, A.shape[1]]
 
-    for k in range(n):
+    for k in tqdm(range(n)):
         x = conseguirColumnaSufijo(A, k, k)
         a = (-1)*signo(x[0])*alc.norma(x, 2)
         u = x - productoEscalar(a, filaCanonica(n - k, 0))

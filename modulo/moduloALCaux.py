@@ -35,9 +35,9 @@ def productoMatricial(A, B): # A es nxp, B es pxm
     m = cantColumnas(B)     
     res = np.zeros((n, m))
     
-    for i in range(n):
+    for i in tqdm(range(n)):
         for j in range(m):
-            res[i][j] = np.sum(A[i, :] * B[:, j])
+            res[i][j] = np.sum(A[i] * B[:, j])
             
     return res
 
@@ -148,11 +148,7 @@ def insertarColumna(A, b, j):
     return A
 
 def conseguirColumnaSufijo(A, j, k):
-    columna = []
-    for l in range(k, cantColumnas(A)):
-        columna.append(A[l][j])
-    
-    return np.array(columna)
+    return A[k:cantColumnas(A), j]
 
 def productoInterno(u, v):
     subtotal = 0
