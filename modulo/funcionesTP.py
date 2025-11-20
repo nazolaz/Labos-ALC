@@ -4,6 +4,10 @@ import numpy as np
 from tqdm import tqdm
 
 def pinvEcuacionesNormales(X, L, Y):
+    """
+    Devuelve la matriz de pesos W utilizando la matriz L de la decomposicion de Cholesky e Y, la matriz de targets
+    """
+
     n, p = X.shape
     rangoX = min(n, p)
     Lt = traspuesta(L)
@@ -42,7 +46,9 @@ def pinvEcuacionesNormales(X, L, Y):
 
 
 def pinvSVD(U, S, V, Y):
-
+    """
+    Devuelve la matriz de pesos W utilizando las matrices U (unitaria) y S (diagonal) de la decomposicion SVD e Y, la matriz de targets
+    """
 
     S_inv_diag = np.zeros(U.shape)
     for i in range(len(S)):
@@ -56,13 +62,22 @@ def pinvSVD(U, S, V, Y):
 
 
 def pinvHouseHolder(Q, R, Y):
+    """
+    Devuelve la matriz de pesos W pasando como parametros las matrices Q y R conseguidas utilizando HouseHolder e Y, la matriz de targets
+    """
     return qrFCN(Q, R, Y)
 
 def pinvGramSchmidt(Q, R, Y):
+    """
+    Devuelve la matriz de pesos W pasando como parametros las matrices Q y R conseguidas utilizando Gram-Schmidt e Y, la matriz de targets
+    """
     return qrFCN(Q, R, Y)
 
 
 def qrFCN(Q, R, Y):
+    """
+    Devuelve la matriz de pesos W utilizando las matrices de la descomposicion QR e Y, la matriz de targets
+    """
 
     #despejamos V haciendo R * V.T = Q.T
     m_r, n_r = R.shape # shape R (2000, 1536)
@@ -80,6 +95,9 @@ def qrFCN(Q, R, Y):
 
     
 def esPseudoInversa(X, pX, tol= 1e-8):
+    """
+    Devuelve True si pX es la pseudoinversa de X bajo los criterios de Moore-Penrose y la tolerancia 'tol'
+    """
     X_pX = productoMatricial(X, pX)
     pX_X = productoMatricial(pX, X)
 
