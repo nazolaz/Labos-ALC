@@ -5,6 +5,9 @@ from tqdm import tqdm
 
 
 def calcularAx(A, x):
+    """
+    Calcula el producto matriz-vector con los parametros A y x
+    """
     x = np.array(x).flatten()
 
     res = np.zeros(A.shape[0])  
@@ -15,6 +18,10 @@ def calcularAx(A, x):
     return np.array(res).reshape((-1,1))
 
 def normaInf(A):
+    """
+    Calcula la norma infinito de la matriz A
+    """
+
     sumatorias = []
     for i, row in enumerate(A):
         sumatorias.append(sum(abs(row)))
@@ -22,6 +29,9 @@ def normaInf(A):
     return max(sumatorias)
 
 def esSimetrica(A, tol = 1e-8): 
+    """
+    Devuelve True si la matriz A es simetrica bajo la tolerancia 'tol'
+    """
 
     for i, row in enumerate(A):
         for j in range(len(row)):
@@ -32,6 +42,10 @@ def esSimetrica(A, tol = 1e-8):
 
 
 def productoMatricial(A, B): # A es nxp, B es pxm
+    """
+    Calcula el producto matricial entre A y B
+    """
+
     n = A.shape[0]
     p, m = B.shape
     
@@ -45,6 +59,10 @@ def productoMatricial(A, B): # A es nxp, B es pxm
 
 
 def productoExterno(u, v):
+    """
+    Calcula el producto de u^t con v 
+    """
+
     n = u.shape[0]
     res = np.zeros((n, n))
     for i, ui in enumerate(u):
@@ -55,6 +73,10 @@ def productoExterno(u, v):
 
 
 def matricesIguales(A, B, atol = 1e-8):
+    """
+    Devuelve True si las matrices A y B son iguales indice a indice bajo la tolerancia 'atol'
+    """
+
     if A.size != B.size and A[0].size != B[0].size:
         return False
     for i, fila in enumerate(A):
@@ -65,16 +87,27 @@ def matricesIguales(A, B, atol = 1e-8):
 
 
 def filaCanonica(dimension, i):
+    """
+    Devuelve el vector canonico 'i' del espacio vectorial respectivo de 'dimension' en forma de vector fila
+    """
     fila = np.zeros(dimension)
     fila[i] = 1
     return fila
 
 def colCanonico(dimension, i):
+    """
+    Devuelve el vector canonico 'i' del espacio vectorial respectivo de 'dimension' en forma de vector columna
+    """
+
     columna = np.zeros((dimension, 1))
     columna[i][0] = 1
     return columna
 
 def normalizarVector(vector, p):
+    """
+    Devuelve el vector pasado como parametro normalizado en norma p
+    """
+
     normaVector = alc.norma(vector, p)
     
     if normaVector == 0:
@@ -83,6 +116,10 @@ def normalizarVector(vector, p):
     return np.array(vector) / normaVector
 
 def traspuesta(A):
+    """
+    Calcula la matriz traspuesta de A 
+    """
+
     if (len(A) == 0):
         return A
 
@@ -103,6 +140,9 @@ def traspuesta(A):
     return res
 
 def triangSup(A):
+    """
+    Devuelve la matriz A pero con 0s debajo de la diagonal
+    """
     ATriangSup = A.copy()
 
     for i in range(len(A)):
@@ -113,6 +153,9 @@ def triangSup(A):
     return ATriangSup
 
 def triangL(A):
+    """
+    Devuelve la matriz A pero con 0s sobre la diagonal y reescribiendo la diagonal con 1s
+    """
     L = A.copy()
 
     for i in range(len(A)):
@@ -125,11 +168,18 @@ def triangL(A):
     return L
 
 
-
 def conseguirColumnaSufijo(A, j, k):
+    """
+    Extrae la columna j de la matriz A, pero solo considerando de los indices k para adelante
+    """
+        
     return A[k:A.shape[1], j]
 
 def productoInterno(u, v):
+    """
+    Calcula el producto u * v^t
+    """    
+    
     subtotal = 0
     
     for ui, vi in zip(u.flat, v.flat):
@@ -138,16 +188,25 @@ def productoInterno(u, v):
     return subtotal
 
 def productoEscalar(A, k):
+    """
+    Devuelve el producto escalar de la matriz A con la constante k 
+    """
     return np.array(A) * k
 
 
 def restaMatricial(A, B):
+    """
+    Devuelve el resultado de la resta matricial entre A y B
+    """
     res = A.copy()
     for i in range(len(A)):
         res[i] = restaVectorial(A[i],B[i])
     return res
 
 def extenderConIdentidad(A, p): #solo para matrices cuadradas
+    """
+    Devuelve la matriz A extendida hacia arriba a la izquierda con 1s en la diagonal
+    """
     res = nIdentidad(p)
     n = A.shape[0]
     for i in range(p - n, p):
@@ -158,15 +217,23 @@ def extenderConIdentidad(A, p): #solo para matrices cuadradas
     return res
 
 def restaVectorial(u, v):
+    """
+    Devuelve la resta vectorial entre u y v
+    """
+
     return u - v
 
 def nIdentidad(n):
+    """
+    Devuelve la matriz identidad de R^n
+    """
     I = np.zeros((n,n))
     for k in range(n):
         I[k][k] = 1
     return I
 
 def signo(n):
+    
     if n > 0:
         return 1
     elif n < 0:
@@ -175,8 +242,10 @@ def signo(n):
         return 0
     
 def submatriz(A, l, k):
+    """
+    Recorta la matriz A desde A[l][l] hasta A[k][k]
+    """
     return A[l-1:k, l-1:k]
-
 
 def cholesky(A):
 
