@@ -114,7 +114,6 @@ class TestModuloALC(unittest.TestCase):
 
 
     def test_normaMatMC(self):
-        return
         nMC = normaMatMC(A=np.eye(2),q=2,p=1,Np=100000)
         self.assertTrue(np.allclose(nMC[0],1,atol=1e-3))
         self.assertTrue(np.allclose(np.abs(nMC[1][0]),1,atol=1e-3) or np.allclose(np.abs(nMC[1][1]),1,atol=1e-3))
