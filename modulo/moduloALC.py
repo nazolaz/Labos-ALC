@@ -2,10 +2,6 @@ import numpy as np
 from moduloALCaux import *
 from tqdm import tqdm
 
-# POR HACER/TERMINAR
-#   - hacer nuestro propio inverso y reemplazar linalg.inv
-#   - terminar SVD
-
 def error(x, y):
     return abs(np.float64(x) - np.float64(y))
 
@@ -47,7 +43,7 @@ def norma(Xs, p):
     if p == 'inf':
         return max(map(abs ,Xs))
     
-    res = np.sum(Xs ** p)
+    res = np.sum(np.abs(Xs) ** p)
     return res**(1/p)
 
 def normaliza(Xs, p):
@@ -61,6 +57,7 @@ def normaliza(Xs, p):
 
 def normaExacta(A, p = [1, 'inf']):
     if p == 1:
+        # la norma 1 de A es igual a la norma infinito de A.T
         return normaInf(traspuesta(A))
     
     elif p == 'inf':
@@ -83,9 +80,9 @@ def normaMatMC(A, q, p, Np):
     ## multiplicar A por cada Xs
     multiplicados = []
     for Xs in normalizados:
-        multiplicados.append((calcularAx(A, Xs)))
+        multiplicados.append(calcularAx(A, Xs).flatten())
     
-    maximo = [0,0]
+    maximo = [0,0] # (máxima norma, máximo vector)
     for vector in multiplicados:
         
         if norma(vector, q) > maximo[0]:
@@ -329,8 +326,6 @@ def QR_con_HH (A, tol = 1e-12):
         # v = u / ||u|| (Tu variable u_n)
         v = u / norma(u, 2)
         v_fila = v.reshape(1, -1)
-        # v @ R[k:, k:] nos da un vector fila
-
 
         valor_intermedio = productoMatricial(v_fila, R[k:, k:]).flatten()
         R[k:, k:] -= 2 * np.outer(v, valor_intermedio)
@@ -358,7 +353,7 @@ def diagRH(A, tol = 1e-15, K = 1000):
     n = len(A)
     v1, l1, _ = metpot2k(A, tol, K)
     resta = normalizarVector(restaVectorial(colCanonico(n,0), v1),2)
-    producto = productoExterno(resta, resta)    
+    producto = productoExterno(resta, resta)  
     Hv1 = restaMatricial(nIdentidad(n), productoEscalar(producto, 2))
     mid = productoMatricial(Hv1,productoMatricial(A,traspuesta(Hv1)))
 

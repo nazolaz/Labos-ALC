@@ -6,7 +6,9 @@ from tqdm import tqdm
 
 def calcularAx(A, x):
     x = np.array(x).flatten()
+
     res = np.zeros(A.shape[0])  
+    
     for i, row in enumerate(A):
         for j, value in enumerate(row):
             res[i] += value * x[j]
