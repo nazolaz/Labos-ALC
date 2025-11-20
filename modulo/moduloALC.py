@@ -1,6 +1,5 @@
 import numpy as np
 from moduloALCaux import *
-from tqdm import tqdm
 
 def error(x, y):
     return abs(np.float64(x) - np.float64(y))
@@ -192,13 +191,11 @@ def inversa(A):
     return productoMatricial(Uinv, Linv)
 
 def calculaLDV(A):
-    # print("primer LU de LDV")
     L, U, nops1 = calculaLU(A)
 
     if(U is None):
         return None, None, None, 0
 
-    # print("segundo LU de LDV")
     Vt, D, nops2 = calculaLU(traspuesta(U))
 
 

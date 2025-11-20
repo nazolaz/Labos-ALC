@@ -1,7 +1,6 @@
 import numpy as np
 import moduloALC as alc
 from collections.abc import Iterable
-from tqdm import tqdm
 
 
 def calcularAx(A, x):
@@ -51,7 +50,7 @@ def productoMatricial(A, B): # A es nxp, B es pxm
     
     res = np.zeros((n, m))
     
-    for i in tqdm(range(n), disable=True):
+    for i in range(n):
         for j in range(m):
             res[i][j] = np.sum(A[i] * B[:, j])
             

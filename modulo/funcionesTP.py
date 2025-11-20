@@ -1,7 +1,6 @@
 from moduloALC import *
 from moduloALCaux import *
 import numpy as np
-from tqdm import tqdm
 
 def pinvEcuacionesNormales(X, L, Y):
     """
@@ -31,7 +30,7 @@ def pinvEcuacionesNormales(X, L, Y):
         V = np.zeros((p,n))
         Xtraspuesta = traspuesta(X)
 
-        for i in tqdm(range(n)):
+        for i in range(n):
             y_i = sustitucionHaciaDelante(L, Xtraspuesta[i]) # iesima columna de X
             V[i] = sustitucionHaciaAtras(Lt, y_i)
 

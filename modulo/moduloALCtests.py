@@ -504,7 +504,6 @@ class TestModuloALC(unittest.TestCase):
         m = 12
         for tam_nucleo in [2,4,6]:
             for i in range(10):
-                # print(f'iteración {i} con tamaño de nucleo={tam_nucleo} y m={m}')
                 A = self.genera_matriz_para_test(m,tam_nucleo=tam_nucleo)
                 self._test_svd_reducida_mn(A)
 
