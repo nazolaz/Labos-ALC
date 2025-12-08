@@ -326,9 +326,12 @@ def QR_con_HH (A, tol = 1e-12):
 
         valor_intermedio = productoMatricial(v_fila, R[k:, k:]).flatten()
         R[k:, k:] -= 2 * np.outer(v, valor_intermedio)
-        
         v_columna = v.reshape(-1, 1)
+        
+        # Qv (m, n-k) x (n-k, n-k)
         valor_intermedio_Q = productoMatricial(Q[:, k:], v_columna).flatten()
+        
+        # Q = Q - 2 Qv * v^t
         Q[:, k:] -= 2 * np.outer(valor_intermedio_Q, v)
 
     return Q, R

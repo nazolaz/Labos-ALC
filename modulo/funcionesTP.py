@@ -49,11 +49,13 @@ def pinvSVD(U, S, V, Y):
     Devuelve la matriz de pesos W utilizando las matrices U (unitaria) y S (diagonal) de la decomposicion SVD e Y, la matriz de targets
     """
 
-    S_inv_diag = np.zeros(U.shape)
-    for i in range(len(S)):
-        S_inv_diag[i,i] = 1.0 / S[i]
+    Ur, Sr, Vr = reducirSVD(U, S, V)
+
+    S_inv_diag = np.zeros(Ur.shape)
+    for i in range(len(Sr)):
+        S_inv_diag[i,i] = 1.0 / Sr[i]
     
-    X_plus = productoMatricial(V, productoMatricial(S_inv_diag, traspuesta(U)))
+    X_plus = productoMatricial(Vr, productoMatricial(S_inv_diag, traspuesta(Ur)))
     
     W = productoMatricial(Y, X_plus)
     

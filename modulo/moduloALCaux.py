@@ -246,9 +246,14 @@ def submatriz(A, l, k):
     """
     return A[l-1:k, l-1:k]
 
-def cholesky(A):
+def calculaCholesky(A):
+    """
+    Calcula la matriz L de la descomposición de Cholesky
+    """
+    
+    if not alc.esSDP(A):
+        return None
 
-    # REQUIERE A SDP
     L, D, _, _ = alc.calculaLDV(A)
 
     for i in range(len(D)):
@@ -257,3 +262,24 @@ def cholesky(A):
     Lmoño = productoMatricial(L, D)
 
     return Lmoño
+
+
+
+def reducirSVD(U, S, V):
+
+    m, n = U.shape[0], V.shape[1]
+    rango = min(m,n)
+
+    Slist = list()
+    if isinstance(S, list):
+        Slist = S[:rango]
+    else:
+        for i in range(rango):
+            Slist.append(S[i,i])
+
+    if rango == m:
+        U = U[:,:rango]
+    else:
+        V = V[:,:rango]
+
+    return U, Slist, V
