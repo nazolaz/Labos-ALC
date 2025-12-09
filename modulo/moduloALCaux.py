@@ -266,6 +266,9 @@ def calculaCholesky(A):
 
 
 def reducirSVD(U, S, V):
+    """
+    Calcula la version reducida de la SVD a partir de la version completa
+    """
 
     m, n = U.shape[0], V.shape[1]
     rango = min(m,n)
