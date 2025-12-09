@@ -269,17 +269,20 @@ def reducirSVD(U, S, V):
     """
     Calcula la version reducida de la SVD a partir de la version completa
     """
-
+    # Convertir listas a numpy arrays
+    U = np.array(U) if isinstance(U, list) else U
+    V = np.array(V) if isinstance(V, list) else V
+    S = np.array(S) if isinstance(S, list) else S
     m, n = U.shape[0], V.shape[1]
     rango = min(m,n)
 
     Slist = list()
-    if isinstance(S, list): # Si S es lista
+    if len(S.shape) == 1: # Si S es lista de valores singulares
         Slist = S[:rango]
-    elif len(S.shape) == 2: # Si S es matriz diagonal
+    elif len(S.shape) == 2: # Si S es matriz diagonal con valores singulares
             Slist = [S[i, i] for i in range(rango)]
     else:
-        raise TypeError(f'Argumento S={S} inválido: debe ser una lista de autovalores o una matriz diagonal de autovalores. ')
+        raise TypeError(f'Argumento S={S} inválido: debe ser una lista de valores singulares o una matriz diagonal de valores singulares. ')
 
     U_red = U[:, :rango]
     V_red = V[:, :rango]
