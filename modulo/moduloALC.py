@@ -3,13 +3,19 @@ from moduloALCaux import *
 
 def error(x, y):
     """
-    Calcula el error absoluto entre los escalares x e y.
+    Calcula el error absoluto entre dos escalares.
+
+    Retorna La diferencia absoluta |x - y| como float64.
     """
     return abs(np.float64(x) - np.float64(y))
 
 def error_relativo(x,y):
     """
-    Calcula el error relativo entre x (valor real) e y (valor aproximado).
+    Calcula el error relativo entre un valor real x y un valor aproximado y.
+    
+    Si x es 0, devuelve el error absoluto de y para evitar división por cero.
+    
+    Retorna |x - y| / |x| (o |y| si x=0).
     """
     if x == 0:
         return abs(y)
@@ -17,14 +23,24 @@ def error_relativo(x,y):
 
 def sonIguales(x,y,atol=1e-08):
     """
-    Devuelve True si x e y son iguales bajo una tolerancia absoluta 'atol'.
+    Determina si dos valores x e y son iguales bajo una tolerancia absoluta.
+    
+    Parámetros:
+    atol: Tolerancia absoluta (por defecto 1e-08).
+    
+    Retorna True si |x - y| <= atol, False en caso contrario.
     """
     
     return np.allclose(error(x,y),0,atol=atol)
 
 def rota(theta: float):
     """
-    Devuelve la matriz de rotación 2x2 correspondiente al ángulo theta .
+    Genera una matriz de rotación 2x2 para un ángulo dado en el plano Euclídeo.
+    
+    Parámetros:
+    theta: Ángulo de rotación en radianes (sentido antihorario).
+    
+    Retorna matriz de numpy 2x2 de rotación.
     """
     cos = np.cos(theta)
     sen = np.sin(theta)
@@ -33,7 +49,12 @@ def rota(theta: float):
 
 def escala(s):
     """
-    Devuelve una matriz diagonal de escalado a partir del vector o lista de factores s.
+    Genera una matriz diagonal de escalado.
+    
+    Parámetros:
+    s: Lista o vector con los factores de escala para cada dimensión.
+    
+    Retorna matriz diagonal donde M[i,i] = s[i].
     """
     matriz = np.eye(len(s))
 
@@ -44,27 +65,47 @@ def escala(s):
 
 def rota_y_escala(theta: float, s):
     """
-    Devuelve la matriz combinada de rotación (theta) y escalado (s).
+    Genera una matriz compuesta de escalado seguido de una rotación.
+    
+    El orden de aplicación es primero Escala, luego Rotación (R * S).
+    
+    Retorna matriz de numpy resultante de multiplicar R(theta) @ S(s).
     """
     return productoMatricial(escala(s), rota(theta))
 
 def afin(theta, s, b):
     """
     Construye la matriz de transformación afín (homogénea 3x3) usando rotación theta, escala s y traslación b.
+
+    Parámetros:
+    theta: Ángulo de rotación.
+    s: Factores de escala.
+    b: Vector de traslación (tx, ty).
     """
+
     m1 = rota_y_escala(theta, s)
     return np.array([[m1[0][0],m1[0][1], b[0]],[m1[1][0], m1[1][1], b[1]],[0,0,1]])
 
 def trans_afin(v, theta, s, b):
     """
-    Aplica la transformación afín definida por theta, s y b al vector v.
+    Aplica una transformación afín a un vector 2D v.
+    
+    Utiliza coordenadas homogéneas internamente para aplicar R, S y la traslación b.
+    
+    Retorna vector 2D transformado.
     """
     casi_res = productoMatricial(afin(theta, s, b),np.array([[v[0]],[v[1]],[1]]))
     return np.array([casi_res[0][0], casi_res[1][0]])
 
 def norma(Xs, p):
     """
-    Calcula la norma vectorial p del vector Xs. Admite p = 'inf' para calcular la norma infinito.
+    Calcula la norma vectorial p de un vector Xs.
+    
+    Parámetros:
+    Xs: Vector de numpy o lista de números.
+    p: Orden de la norma (int) o la cadena 'inf' para norma infinito.
+    
+    Retorna el valor escalar de la norma.
     """
     if p == 'inf':
         return max(map(abs ,Xs))
@@ -74,7 +115,13 @@ def norma(Xs, p):
 
 def normaliza(Xs, p):
     """
-    Recibe una lista de vectores Xs y devuelve la lista con cada vector normalizado según la norma p.
+    Normaliza una lista de vectores según la norma p indicada.
+    
+    Parámetros:
+    Xs: Lista de vectores.
+    p: Orden de la norma a utilizar.
+    
+    Retorna lista de vectores unitarios.
     """
     XsNormalizado = []
 
@@ -86,7 +133,13 @@ def normaliza(Xs, p):
 
 def normaExacta(A, p = [1, 'inf']):
     """
-    Calcula la norma inducida matricial exacta (1 o infinito) de la matriz A.
+    Calcula la norma matricial inducida exacta (Norma-1 o Norma-Infinito).
+    
+    Parámetros:
+    A: Matriz de numpy.
+    p: 1 (máxima suma absoluta de columnas) o 'inf' (máxima suma absoluta de filas).
+    
+    Retorna el valor de la norma o None si p no es soportado.
     """
 
     if p == 1:
@@ -101,7 +154,11 @@ def normaExacta(A, p = [1, 'inf']):
 
 def normaMatMC(A, q, p, Np):
     """
-    Estima la norma inducida matricial mediante el método de Monte Carlo con Np muestras.
+    Estima la norma inducida matricial ||A||_{p,q} mediante el método de Monte Carlo.
+    
+    Genera Np vectores aleatorios unitarios en norma p, les aplica A, y mide su tamaño en norma q.
+    
+    Retorna una lista con: [maxima_norma_hallada, vector_que_la_alcanza].
     """
     n = A.shape[0]
     vectors = []
@@ -129,7 +186,14 @@ def normaMatMC(A, q, p, Np):
 
 def condMC(A, p, Np=1000000):
     """
-    Estima el número de condición de A usando metodo de MonteCarlo .
+    Estima el número de condición de A (||A|| * ||A^-1||) usando Monte Carlo.
+    
+    Parámetros:
+    A: Matriz inversible.
+    p: Norma a utilizar para la estimación.
+    Np: Número de muestras para Monte Carlo.
+    
+    Retorna estimación del número de condición o None si A no es inversible.
     """
     AInv = np.linalg.inv(A)
     if AInv is None:
@@ -143,6 +207,10 @@ def condMC(A, p, Np=1000000):
 def condExacta(A, p):
     """
     Calcula el número de condición exacto de A para normas 1 o infinito.
+    
+    Requiere calcular la inversa de A explícitamente.
+    
+    Retorna ||A||_p * ||A^-1||_p.
     """
     AInv = inversa(A)
     normaA = normaExacta(A, p)
@@ -155,7 +223,9 @@ def condExacta(A, p):
 
 def sustitucionHaciaAtras(A, b):
     """
-    Resuelve el sistema Ax=b donde A es triangular superior. Devuelve el vector solución x.
+    Resuelve el sistema lineal Ax = b donde A es triangular superior.
+    
+    Retorna el vector solución x.
     """
     m, n = A.shape
     valoresX = np.zeros(n)
@@ -174,7 +244,9 @@ def sustitucionHaciaAtras(A, b):
 
 def sustitucionHaciaDelante(A, b):
     """
-    Resuelve el sistema Ax=b donde A es triangular inferior. Devuelve el vector solución x.
+    Resuelve el sistema lineal Ax = b donde A es triangular inferior.
+    
+    Retorna el vector solución x.
     """
     valoresX = []
     for i, row in enumerate(A):
@@ -187,7 +259,13 @@ def sustitucionHaciaDelante(A, b):
 
 def res_tri(L, b, inferior=True):
     """
-    Resuelve un sistema triangular inferior (si inferior=True) o superior.
+    Wrapper para resolver sistemas triangulares.
+    
+    Parámetros:
+    inferior: Si es True, asume L triangular inferior
+              Si es False, asume L triangular superior
+
+    Retorna el vector solución x.
     """
     if(inferior):
         return sustitucionHaciaDelante(L,b)
@@ -195,8 +273,14 @@ def res_tri(L, b, inferior=True):
 
 def calculaLU(A):
     """
-    Calcula la descomposición LU de A sin pivoteo.
-    Devuelve L (triangular inferior), U (triangular superior) y la cantidad de operaciones.
+    Calcula la descomposición LU de la matriz A sin pivoteo.
+    
+    Retorna:
+    L: Matriz triangular inferior con 1s en la diagonal.
+    U: Matriz triangular superior.
+    cant_op: Número de operaciones de punto flotante realizadas.
+    
+    Devuelve (None, None, 0) si encuentra un 0 en la diagonal (necesita pivoteo).
     """
     cant_op = 0
     m, n = A.shape
@@ -222,7 +306,10 @@ def calculaLU(A):
 
 def inversa(A):
     """
-    Calcula la inversa de A utilizando su descomposición LU.
+    Calcula la inversa de A usando descomposición LU.
+    
+    Retorna:
+    La matriz inversa A^-1 o None si A es singular o requiere pivoteo no soportado.
     """
     n = A.shape[0]
 
@@ -251,8 +338,15 @@ def inversa(A):
 
 def calculaLDV(A):
     """
-    Calcula la descomposición L D V^t de A.
-    Devuelve L (triangular inferior), D (diagonal), Vt (V traspuesta) y la cantidad de operaciones.
+    Calcula la descomposición L D V^T.
+    
+    Descompone A en L * U, y luego descompone U^T para extraer la diagonal D.
+    
+    Retorna:
+    L: Triangular inferior unitaria.
+    D: Matriz diagonal.
+    Vt: Matriz V traspuesta (triangular superior unitaria).
+    nops: Cantidad total de operaciones.
     """
     L, U, nops1 = calculaLU(A)
 
@@ -269,7 +363,10 @@ def calculaLDV(A):
 
 def esSDP(A, atol=1e-10):
     """
-    Devuelve True si la matriz A es Simétrica Definida Positiva.
+    Determina si la matriz A es Simétrica Definida Positiva (SDP).
+    
+    Verifica simetría y luego chequea que todos los elementos de la matriz D 
+    en la descomposición LDL^T sean estrictamente positivos.
     """
     if(not (esSimetrica(A, atol))):
         return False
@@ -287,8 +384,17 @@ def esSDP(A, atol=1e-10):
 
 def metpot2k(A, tol=1e-15, K=1000.0):
     """
-    Aplica el Método de la Potencia para encontrar el autovalor dominante.
-    Devuelve el autovector, el autovalor y las iteraciones realizadas.
+    Calcula el autovalor dominante y su autovector asociado usando el Método de la Potencia.
+    
+    Parámetros:
+    A: Matriz cuadrada.
+    tol: Tolerancia para el criterio de parada.
+    K: Número máximo de iteraciones.
+    
+    Retorna:
+    v: Autovector normalizado asociado al autovalor dominante.
+    l: Autovalor dominante estimado.
+    k: Número de iteraciones realizadas.
     """
     n = len(A[0])
     v = np.random.rand(n,1)
@@ -320,10 +426,14 @@ def f_A(A, v):
 
     return 0
 
-def QR_con_GS(A,tol=1e-12,retorna_nops=False):
+def QR_con_GS(A, tol=1e-12, retorna_nops=False):
     """
-    Calcula la factorización QR mediante Gram-Schmidt.
-    Devuelve Q (ortogonal), R (triangular superior) y opcionalmente la cantidad de operaciones.
+    Calcula la factorización QR mediante el proceso de Gram-Schmidt.
+    
+    Retorna:
+    Q: Matriz ortogonal.
+    R: Matriz triangular superior.
+    nops (opcional): Cantidad de operaciones realizadas.
     """
     m , n = A.shape
     Q = np.zeros((m,n))
@@ -365,10 +475,13 @@ def QR_con_GS(A,tol=1e-12,retorna_nops=False):
 
     return Q, R
 
-def QR_con_HH (A, tol = 1e-12):
+def QR_con_HH(A, tol=1e-12):
     """
     Calcula la factorización QR mediante reflexiones de Householder.
-    Devuelve Q (ortogonal) y R (triangular superior/trapezoidal).
+    
+    Retorna:
+    Q: Matriz ortogonal.
+    R: Matriz triangular superior.
     """
 
     # OPTIMIZACIÓN
@@ -413,9 +526,14 @@ def QR_con_HH (A, tol = 1e-12):
 
     return Q, R
 
-def calculaQR(A, metodo = 'RH', tol = 1e-12, nops = False):
+def calculaQR(A, metodo='RH', tol=1e-12, nops=False):
     """
-    Calcula la decomposicion QR de A. Permite elegir metodo='RH' (Householder) o 'GS' (Gram-Schmidt).
+    Permite calcular la descomposición QR de A.
+    
+    Parámetros:
+    metodo: 'RH' (Reflexiones Householder) o 'GS' (Gram-Schmidt).
+    
+    Retorna Q y R.
     """
     if metodo == 'RH':
         return QR_con_HH(A, tol)
@@ -429,10 +547,13 @@ def calculaQR(A, metodo = 'RH', tol = 1e-12, nops = False):
     else: 
         return None, None, None
     
-def diagRH(A, tol = 1e-15, K = 1000):
+def diagRH(A, tol=1e-15, K=1000):
     """
-    Diagonaliza la matriz A usando reflexiones de Householder y metodo de la potencia.
-    Devuelve S (matriz de autovectores) y D (matriz diagonal de autovalores).
+    Calcula autovalores y autovectores de una matriz simétrica mediante deflación de Householder.
+    
+    Retorna:
+    S: Matriz cuyas columnas son los autovectores.
+    D: Matriz diagonal de autovalores.
     """
     n = len(A)
     v1, l1, _ = metpot2k(A, tol, K)
@@ -537,12 +658,20 @@ def multiplica_rala_vector(A,v):
 
     return w
 
-def svd_reducida(A,k="max",tol=1e-15):
+def svd_reducida(A, k="max", tol=1e-15):
     """
-    A la matriz de interes (de m x n)
-    k el numero de valores singulares (y vectores) a retener.
-    tol la tolerancia para considerar un valor singular igual a cero
-    Retorna hatU (matriz de m x k), hatSig (vector de k valores singulares) y hatV (matriz de n x k)
+    Calcula la Descomposición en Valores Singulares (SVD) reducida de A.
+    
+    Utiliza la diagonalización de A^T A para obtener V y Sigma, y luego proyecta para obtener U.
+    
+    Parámetros:
+    k: Número de valores singulares a retener (o "max" para rango completo detectado).
+    tol: Tolerancia para considerar un valor singular como cero.
+    
+    Retorna:
+    U_k: Primeras k columnas de la matriz unitaria izquierda.
+    S_k: Vector con los primeros k valores singulares.
+    V_k: Primeras k columnas de la matriz unitaria derecha (V, no V^T).
     """
 
     m, n = A.shape

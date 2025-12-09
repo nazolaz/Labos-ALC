@@ -256,8 +256,8 @@ def calculaCholesky(A):
 
     L, D, _, _ = alc.calculaLDV(A)
 
-    for i in range(len(D)):
-        D[i][i] = np.sqrt(D[i][i])
+    for i in range(len(D)): # type: ignore
+        D[i][i] = np.sqrt(D[i][i]) # type: ignore
 
     Lmoño = productoMatricial(L, D)
 
@@ -274,15 +274,14 @@ def reducirSVD(U, S, V):
     rango = min(m,n)
 
     Slist = list()
-    if isinstance(S, list):
+    if isinstance(S, list): # Si S es lista
         Slist = S[:rango]
+    elif len(S.shape) == 2: # Si S es matriz diagonal
+            Slist = [S[i, i] for i in range(rango)]
     else:
-        for i in range(rango):
-            Slist.append(S[i,i])
+        raise TypeError(f'Argumento S={S} inválido: debe ser una lista de autovalores o una matriz diagonal de autovalores. ')
 
-    if rango == m:
-        U = U[:,:rango]
-    else:
-        V = V[:,:rango]
+    U_red = U[:, :rango]
+    V_red = V[:, :rango]
 
-    return U, Slist, V
+    return U_red, Slist, V_red
